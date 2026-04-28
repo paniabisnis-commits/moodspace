@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import 'intro_flow_screen.dart';
+import 'mood_decor.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -58,47 +59,51 @@ class _SplashScreenState extends State<SplashScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF7F8FC),
-      body: Center(
-        child: FadeTransition(
-          opacity: _opacityAnimation,
-          child: ScaleTransition(
-            scale: _scaleAnimation,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(
-                        color: const Color(0xFF7986CB).withValues(alpha: 0.35),
-                        blurRadius: 35,
-                        spreadRadius: 8,
-                      ),
-                    ],
+      body: MoodDecorBackground(
+        child: Center(
+          child: FadeTransition(
+            opacity: _opacityAnimation,
+            child: ScaleTransition(
+              scale: _scaleAnimation,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: const Color(
+                            0xFF7986CB,
+                          ).withValues(alpha: 0.35),
+                          blurRadius: 35,
+                          spreadRadius: 8,
+                        ),
+                      ],
+                    ),
+                    child: Image.asset(
+                      'assets/logo.png',
+                      width: 130,
+                      height: 130,
+                    ),
                   ),
-                  child: Image.asset(
-                    'assets/logo.png',
-                    width: 130,
-                    height: 130,
+                  const SizedBox(height: 25),
+                  const Text(
+                    'MoodSpace',
+                    style: TextStyle(
+                      fontSize: 32,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF5C6BC0),
+                      letterSpacing: 1,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 25),
-                const Text(
-                  'MoodSpace',
-                  style: TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF5C6BC0),
-                    letterSpacing: 1,
+                  const SizedBox(height: 8),
+                  const Text(
+                    'Track your feelings beautifully',
+                    style: TextStyle(fontSize: 15, color: Colors.grey),
                   ),
-                ),
-                const SizedBox(height: 8),
-                const Text(
-                  'Track your feelings beautifully',
-                  style: TextStyle(fontSize: 15, color: Colors.grey),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

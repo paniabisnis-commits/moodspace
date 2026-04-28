@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 const Color appPrimary = Color(0xFF5C6BC0);
 const Color appSecondary = Color(0xFF7986CB);
 const Color appBackground = Color(0xFFF7F8FC);
+const Color appInk = Color(0xFF33406B);
 
 class MoodDefinition {
   const MoodDefinition({
@@ -59,7 +60,7 @@ const List<MoodDefinition> moodDefinitions = [
   ),
   MoodDefinition(
     label: 'Tenang',
-    icon: Icons.spa_rounded,
+    icon: Icons.sentiment_satisfied_alt_rounded,
     color: Color(0xFF5C6BC0),
     feelings: [
       'Damai',
@@ -88,7 +89,7 @@ const List<MoodDefinition> moodDefinitions = [
   MoodDefinition(
     label: 'Sedih',
     icon: Icons.sentiment_dissatisfied_rounded,
-    color: Color(0xFF7E57C2),
+    color: Color(0xFF8A7FD1),
     feelings: [
       'Kecewa',
       'Sepi',
@@ -102,7 +103,7 @@ const List<MoodDefinition> moodDefinitions = [
   ),
   MoodDefinition(
     label: 'Marah',
-    icon: Icons.local_fire_department_rounded,
+    icon: Icons.sentiment_very_dissatisfied_rounded,
     color: Color(0xFFEF5350),
     feelings: [
       'Kesal',
@@ -153,3 +154,25 @@ const List<String> homeInfluenceTags = [
 ];
 
 const List<String> energyLevels = ['Rendah', 'Sedang', 'Tinggi'];
+
+Color energyColor(String level) {
+  switch (level) {
+    case 'Rendah':
+      return const Color(0xFFE57373);
+    case 'Tinggi':
+      return const Color(0xFF66BB6A);
+    default:
+      return const Color(0xFFFFB74D);
+  }
+}
+
+IconData energyIcon(String level) {
+  switch (level) {
+    case 'Rendah':
+      return Icons.battery_1_bar_rounded;
+    case 'Tinggi':
+      return Icons.battery_full_rounded;
+    default:
+      return Icons.battery_3_bar_rounded;
+  }
+}

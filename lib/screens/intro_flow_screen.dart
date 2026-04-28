@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'mood_decor.dart';
 import 'onboarding_screen.dart';
 
 class IntroFlowScreen extends StatefulWidget {
@@ -51,79 +52,89 @@ class _IntroFlowScreenState extends State<IntroFlowScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF7F8FC),
-      body: SafeArea(
-        child: Column(
-          children: [
-            Align(
-              alignment: Alignment.centerRight,
-              child: TextButton(
-                onPressed: () {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const OnboardingScreen(),
+      body: MoodDecorBackground(
+        child: SafeArea(
+          child: Column(
+            children: [
+              Align(
+                alignment: Alignment.centerRight,
+                child: TextButton.icon(
+                  onPressed: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const OnboardingScreen(),
+                      ),
+                    );
+                  },
+                  icon: const Icon(Icons.skip_next_rounded),
+                  label: const Text('Lewati'),
+                ),
+              ),
+              Expanded(
+                child: PageView.builder(
+                  controller: _controller,
+                  physics: const BouncingScrollPhysics(),
+                  itemCount: pages.length,
+                  onPageChanged: (index) {
+                    setState(() {
+                      currentPage = index;
+                    });
+                  },
+                  itemBuilder: (context, index) {
+                    return _AnimatedPage(
+                      title: pages[index]['title'] as String,
+                      desc: pages[index]['desc'] as String,
+                      icon: pages[index]['icon'] as IconData,
+                      isActive: index == currentPage,
+                      controller: _controller,
+                      index: index,
+                    );
+                  },
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List.generate(
+                  pages.length,
+                  (index) => AnimatedContainer(
+                    duration: const Duration(milliseconds: 300),
+                    margin: const EdgeInsets.symmetric(horizontal: 4),
+                    width: currentPage == index ? 18 : 8,
+                    height: 8,
+                    decoration: BoxDecoration(
+                      color: currentPage == index
+                          ? const Color(0xFF5C6BC0)
+                          : Colors.grey.shade400,
+                      borderRadius: BorderRadius.circular(10),
                     ),
-                  );
-                },
-                child: const Text('Lewati'),
-              ),
-            ),
-            Expanded(
-              child: PageView.builder(
-                controller: _controller,
-                physics: const BouncingScrollPhysics(),
-                itemCount: pages.length,
-                onPageChanged: (index) {
-                  setState(() {
-                    currentPage = index;
-                  });
-                },
-                itemBuilder: (context, index) {
-                  return _AnimatedPage(
-                    title: pages[index]['title'] as String,
-                    desc: pages[index]['desc'] as String,
-                    icon: pages[index]['icon'] as IconData,
-                    isActive: index == currentPage,
-                    controller: _controller,
-                    index: index,
-                  );
-                },
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(
-                pages.length,
-                (index) => AnimatedContainer(
-                  duration: const Duration(milliseconds: 300),
-                  margin: const EdgeInsets.symmetric(horizontal: 4),
-                  width: currentPage == index ? 18 : 8,
-                  height: 8,
-                  decoration: BoxDecoration(
-                    color: currentPage == index
-                        ? const Color(0xFF5C6BC0)
-                        : Colors.grey.shade400,
-                    borderRadius: BorderRadius.circular(10),
                   ),
                 ),
               ),
-            ),
-            const SizedBox(height: 25),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 30),
-              child: SizedBox(
-                width: double.infinity,
-                height: 55,
-                child: ElevatedButton(
-                  onPressed: nextPage,
-                  child: Text(
-                    currentPage == pages.length - 1 ? 'Mulai' : 'Selanjutnya',
+              const SizedBox(height: 25),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 30),
+                child: SizedBox(
+                  width: double.infinity,
+                  height: 55,
+                  child: ElevatedButton.icon(
+                    onPressed: nextPage,
+                    icon: Icon(
+                      currentPage == pages.length - 1
+                          ? Icons.favorite_rounded
+                          : Icons.arrow_forward_rounded,
+                    ),
+                    label: Text(
+                      currentPage == pages.length - 1
+                          ? 'Mulai Perjalanan'
+                          : 'Selanjutnya',
+                    ),
                   ),
                 ),
               ),
-            ),
-            const SizedBox(height: 30),
-          ],
+              const SizedBox(height: 30),
+            ],
+          ),
         ),
       ),
     );
@@ -207,6 +218,34 @@ class _AnimatedPage extends StatelessWidget {
                               spreadRadius: 8,
                             ),
                           ],
+                        ),
+                      ),
+                      Positioned(
+                        top: 24,
+                        left: 18,
+                        child: Icon(
+                          Icons.auto_awesome_rounded,
+                          color: const Color(0xFF98A4E8).withValues(alpha: 0.6),
+                          size: 22,
+                        ),
+                      ),
+                      Positioned(
+                        bottom: 28,
+                        right: 26,
+                        child: Transform.rotate(
+                          angle: 0.2,
+                          child: Container(
+                            width: 34,
+                            height: 34,
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: const Color(
+                                  0xFF7986CB,
+                                ).withValues(alpha: 0.45),
+                              ),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
                         ),
                       ),
                       Icon(icon, size: 70, color: const Color(0xFF5C6BC0)),
