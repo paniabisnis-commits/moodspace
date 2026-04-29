@@ -12,11 +12,12 @@ class CommitmentScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final commitments = [
-      'Aktif menjaga kenyamanan diri',
-      'Menjadi versi terbaik dari diriku',
-      'Mulai mengurangi overthinking',
-      'Tidak menyalahkan diri sendiri',
-    ];
+    'Mengenali dan menerima perasaanku',
+    'Mengurangi overthinking secara perlahan',
+    'Tidak menyalahkan diri sendiri',
+    'Memberi waktu untuk istirahat saat lelah',
+    'Lebih jujur terhadap apa yang aku rasakan',
+  ];
 
     return Scaffold(
       backgroundColor: const Color(0xFFF7F8FC),
