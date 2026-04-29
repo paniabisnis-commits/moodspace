@@ -280,7 +280,7 @@ class _HomeScreenState extends State<HomeScreen> {
               Text(
                 currentMood == null
                     ? 'Coba mulai dengan satu catatan mood sederhana hari ini.'
-                    : 'Perasaan ${currentMood!.mood.toLowerCase()} muncul bersama energi ${currentMood!.energy.toLowerCase()}. Coba jaga ritme yang membuatmu lebih nyaman.',
+                    : 'Perasaan ${currentMood!.mood.toLowerCase()} muncul bersama energi ${energyLevel.toLowerCase()}. Coba jaga ritme yang membuatmu lebih nyaman.',
                 style: const TextStyle(height: 1.5, color: Color(0xFF657091)),
               ),
             ],
