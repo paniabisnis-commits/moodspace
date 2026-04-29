@@ -39,24 +39,37 @@ class _MoodDetailScreenState extends State<MoodDetailScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: appBackground,
-      appBar: AppBar(
-        leading: IconButton(
-          onPressed: () => Navigator.of(context).pop(),
-          icon: const Icon(Icons.arrow_back_ios_new_rounded),
-        ),
-        title: const Text('Catat Mood'),
-      ),
+      
       body: MoodDecorBackground(
         child: Padding(
           padding: const EdgeInsets.all(24),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              const SizedBox(height: 40),
               Expanded(
                 child: SingleChildScrollView(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      
+  Positioned(
+  top: 0, 
+  left: 12, 
+  child: SafeArea(
+    child: Material(
+      color: Colors.white.withValues(alpha: 0.2),
+      shape: const CircleBorder(),
+      child: IconButton(
+        padding: const EdgeInsets.all(12), 
+        iconSize: 26, 
+        onPressed: () => Navigator.of(context).pop(),
+        icon: const Icon(Icons.arrow_back_ios_new_rounded),
+        color: Colors.black,
+      ),
+    ),
+  ),
+),
                       Center(
                         child: Container(
                           width: 110,
