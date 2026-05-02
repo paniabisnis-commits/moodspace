@@ -40,36 +40,20 @@ class _MoodDetailScreenState extends State<MoodDetailScreen> {
     return Scaffold(
       backgroundColor: appBackground,
       
-      body: MoodDecorBackground(
+      body: Stack(
+        children: [
+      MoodDecorBackground(
         child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 40),
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
+          padding: const EdgeInsets.fromLTRB(24, 50, 24, 24),
+            child: Column(
+              children: [
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
                       
-  Positioned(
-  top: 0, 
-  left: 12, 
-  child: SafeArea(
-    child: Material(
-      color: Colors.white.withValues(alpha: 0.2),
-      shape: const CircleBorder(),
-      child: IconButton(
-        padding: const EdgeInsets.all(12), 
-        iconSize: 26, 
-        onPressed: () => Navigator.of(context).pop(),
-        icon: const Icon(Icons.arrow_back_ios_new_rounded),
-        color: Colors.black,
-      ),
-    ),
-  ),
-),
+  
                       Center(
                         child: Container(
                           width: 110,
@@ -270,6 +254,25 @@ class _MoodDetailScreenState extends State<MoodDetailScreen> {
             ],
           ),
         ),
+      ),
+       Positioned(
+            top: 0,
+            left: 12,
+            child: SafeArea(
+              child: Material(
+                color: widget.definition.color.withValues(alpha: 0.2),
+                shape: const CircleBorder(),
+                child: IconButton(
+                  padding: const EdgeInsets.all(12),
+                  iconSize: 26,
+                  onPressed: () => Navigator.of(context).pop(),
+                  icon: const Icon(Icons.arrow_back_ios_new_rounded),
+                  color: widget.definition.color,
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -66,51 +66,53 @@ class CommitmentScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 24),
                 Expanded(
-                  child: SectionAccentCard(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'Mulai saat ini, aku berkomitmen untuk:',
-                          style: TextStyle(fontSize: 18, color: Colors.grey),
-                        ),
-                        const SizedBox(height: 25),
-                        ...commitments.map(
-                          (item) => Padding(
-                            padding: const EdgeInsets.only(bottom: 22),
-                            child: Row(
-                              children: [
-                                Container(
-                                  width: 38,
-                                  height: 38,
-                                  decoration: BoxDecoration(
-                                    color: appSecondary.withValues(alpha: 0.12),
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: const Icon(
-                                    Icons.check_rounded,
-                                    color: Color(0xFF5C6BC0),
-                                    size: 24,
-                                  ),
-                                ),
-                                const SizedBox(width: 16),
-                                Expanded(
-                                  child: Text(
-                                    item,
-                                    style: const TextStyle(
-                                      fontSize: 18,
-                                      color: Color(0xFF555555),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
+  child: SectionAccentCard(
+    child: SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Mulai saat ini, aku berkomitmen untuk:',
+            style: TextStyle(fontSize: 18, color: Colors.grey),
+          ),
+          const SizedBox(height: 25),
+          ...commitments.map(
+            (item) => Padding(
+              padding: const EdgeInsets.only(bottom: 22),
+              child: Row(
+                children: [
+                  Container(
+                    width: 38,
+                    height: 38,
+                    decoration: BoxDecoration(
+                      color: appSecondary.withValues(alpha: 0.12),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.check_rounded,
+                      color: Color(0xFF5C6BC0),
+                      size: 24,
                     ),
                   ),
-                ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Text(
+                      item,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        color: Color(0xFF555555),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    ),
+  ),
+),
                 const SizedBox(height: 24),
                 SizedBox(
                   width: double.infinity,

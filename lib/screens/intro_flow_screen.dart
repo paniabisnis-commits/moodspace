@@ -178,6 +178,11 @@ class _AnimatedPage extends StatelessWidget {
           offset: Offset(translateX, 0),
           child: Padding(
             padding: const EdgeInsets.all(30),
+            child: SingleChildScrollView(
+              child: ConstrainedBox(
+              constraints: BoxConstraints(
+                minHeight: MediaQuery.of(context).size.height * 0.7,
+              ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -275,13 +280,15 @@ class _AnimatedPage extends StatelessWidget {
                           style: const TextStyle(
                             fontSize: 16,
                             color: Colors.grey,
-                          ),
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
-                  ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
         );
