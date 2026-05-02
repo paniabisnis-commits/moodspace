@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 
-import 'mood_model.dart';
 
 class MoodDecorBackground extends StatelessWidget {
+  final Widget child;
+  final Color accentColor;
+  
   const MoodDecorBackground({
     super.key,
     required this.child,
+    this.accentColor = const Color(0xFF7C8CF8),
     this.showSparkles = true,
   });
 
-  final Widget child;
   final bool showSparkles;
 
   @override
@@ -21,7 +23,7 @@ class MoodDecorBackground extends StatelessWidget {
           left: -10,
           child: _blurBlob(
             size: 180,
-            color: appSecondary.withValues(alpha: 0.18),
+            color: accentColor.withValues(alpha: 0.18),
           ),
         ),
         Positioned(
@@ -29,7 +31,7 @@ class MoodDecorBackground extends StatelessWidget {
           right: -30,
           child: _blurBlob(
             size: 120,
-            color: const Color(0xFFB7C0F4).withValues(alpha: 0.22),
+            color: accentColor.withValues(alpha: 0.22),
           ),
         ),
         Positioned(
@@ -37,14 +39,30 @@ class MoodDecorBackground extends StatelessWidget {
           left: -24,
           child: _blurBlob(
             size: 140,
-            color: const Color(0xFFD7DCFA).withValues(alpha: 0.4),
+            color: accentColor.withValues(alpha: 0.12),
           ),
         ),
-        if (showSparkles) ...const [
-          Positioned(top: 88, left: 34, child: _Sparkle(size: 22)),
-          Positioned(top: 168, right: 40, child: _DoodleDot()),
-          Positioned(bottom: 160, left: 32, child: _MiniWave()),
-          Positioned(bottom: 88, right: 34, child: _Sparkle(size: 18)),
+        if (showSparkles) ...[
+          Positioned(
+            top: 88,
+            left: 34,
+            child: _Sparkle(size: 22, color: accentColor),
+          ),
+          Positioned(
+            top: 168,
+            right: 40,
+            child: _DoodleDot(color: accentColor),
+          ),
+          Positioned(
+            bottom: 160,
+            left: 32,
+            child: _MiniWave(color: accentColor),
+          ),
+          Positioned(
+            bottom: 88,
+            right: 34,
+            child: _Sparkle(size: 18, color: accentColor),
+          ),
         ],
         child,
       ],
@@ -67,10 +85,11 @@ class SectionAccentCard extends StatelessWidget {
     super.key,
     required this.child,
     this.padding = const EdgeInsets.all(18),
+    this.accentColor = const Color(0xFF7C8CF8),
   });
-
   final Widget child;
   final EdgeInsets padding;
+   final Color accentColor;
 
   @override
   Widget build(BuildContext context) {
@@ -96,7 +115,7 @@ class SectionAccentCard extends StatelessWidget {
               width: 74,
               height: 74,
               decoration: BoxDecoration(
-                color: appSecondary.withValues(alpha: 0.08),
+                color: accentColor.withValues(alpha: 0.08),
                 shape: BoxShape.circle,
               ),
             ),
@@ -111,7 +130,7 @@ class SectionAccentCard extends StatelessWidget {
                 height: 56,
                 decoration: BoxDecoration(
                   border: Border.all(
-                    color: appPrimary.withValues(alpha: 0.1),
+                    color: accentColor.withValues(alpha: 0.1),
                     width: 2,
                   ),
                   borderRadius: BorderRadius.circular(18),
@@ -127,10 +146,11 @@ class SectionAccentCard extends StatelessWidget {
 }
 
 class MoodHeadline extends StatelessWidget {
-  const MoodHeadline(this.title, {super.key, this.center = true});
+  const MoodHeadline(this.title, {super.key, this.center = true, this.accentColor = const Color(0xFF7C8CF8),});
 
   final String title;
   final bool center;
+  final Color accentColor;
 
   @override
   Widget build(BuildContext context) {
@@ -142,8 +162,8 @@ class MoodHeadline extends StatelessWidget {
         Container(
           width: 10,
           height: 10,
-          decoration: const BoxDecoration(
-            color: appSecondary,
+          decoration: BoxDecoration(
+            color: accentColor.withValues(alpha: 0.4),
             shape: BoxShape.circle,
           ),
         ),
@@ -161,8 +181,8 @@ class MoodHeadline extends StatelessWidget {
         Container(
           width: 10,
           height: 10,
-          decoration: const BoxDecoration(
-            color: appPrimary,
+          decoration: BoxDecoration(
+            color: accentColor.withValues(alpha: 0.7),
             shape: BoxShape.circle,
           ),
         ),
@@ -172,21 +192,27 @@ class MoodHeadline extends StatelessWidget {
 }
 
 class _Sparkle extends StatelessWidget {
-  const _Sparkle({required this.size});
+  const _Sparkle({
+    required this.size,
+    required this.color,
+  });
 
   final double size;
+  final Color color;
 
   @override
   Widget build(BuildContext context) {
     return Transform.rotate(
       angle: 0.3,
-      child: Icon(Icons.auto_awesome_rounded, size: size, color: appPrimary),
+      child: Icon(Icons.auto_awesome_rounded, size: size, color: color),
     );
   }
 }
 
 class _DoodleDot extends StatelessWidget {
-  const _DoodleDot();
+  const _DoodleDot({required this.color});
+
+  final Color color;
 
   @override
   Widget build(BuildContext context) {
@@ -199,7 +225,9 @@ class _DoodleDot extends StatelessWidget {
           width: 7,
           height: 7,
           decoration: BoxDecoration(
-            color: index == 1 ? appPrimary : appSecondary,
+            color: index == 1
+                ? color
+                : color.withValues(alpha: 0.4),
             shape: BoxShape.circle,
           ),
         ),
@@ -209,7 +237,9 @@ class _DoodleDot extends StatelessWidget {
 }
 
 class _MiniWave extends StatelessWidget {
-  const _MiniWave();
+  const _MiniWave({required this.color});
+
+  final Color color;
 
   @override
   Widget build(BuildContext context) {
@@ -221,7 +251,7 @@ class _MiniWave extends StatelessWidget {
           width: 10,
           height: 4 + (index.isEven ? 7 : 0),
           decoration: BoxDecoration(
-            color: appPrimary.withValues(alpha: 0.4),
+            color: color.withValues(alpha: 0.4),
             borderRadius: BorderRadius.circular(999),
           ),
         ),

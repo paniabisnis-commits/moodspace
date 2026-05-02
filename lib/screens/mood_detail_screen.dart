@@ -43,8 +43,9 @@ class _MoodDetailScreenState extends State<MoodDetailScreen> {
       body: Stack(
         children: [
       MoodDecorBackground(
+        accentColor: widget.definition.color,
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(24, 50, 24, 24),
+          padding: const EdgeInsets.fromLTRB(24, 50, 24, 40),
             child: Column(
               children: [
                 Expanded(
@@ -114,7 +115,7 @@ class _MoodDetailScreenState extends State<MoodDetailScreen> {
                                 ),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: Colors.black.withValues(alpha: 0.05),
+                                    color: widget.definition.color.withValues(alpha: 0.12),
                                     blurRadius: 8,
                                     offset: const Offset(0, 4),
                                   ),
@@ -226,6 +227,12 @@ class _MoodDetailScreenState extends State<MoodDetailScreen> {
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: widget.definition.color,
+                    foregroundColor: Colors.white,
+                    elevation: 6,
+                    shadowColor: widget.definition.color.withValues(alpha: 0.4),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(18),
+                    ),
                   ),
                   onPressed: () {
                     if (selectedFeeling == null) {
@@ -256,11 +263,13 @@ class _MoodDetailScreenState extends State<MoodDetailScreen> {
         ),
       ),
        Positioned(
-            top: 0,
-            left: 12,
+            top: 20,
+            left: 16,
             child: SafeArea(
+              child: Padding(
+              padding: const EdgeInsets.only(top: 8),
               child: Material(
-                color: widget.definition.color.withValues(alpha: 0.2),
+                color: Colors.white.withValues(alpha: 0.7),
                 shape: const CircleBorder(),
                 child: IconButton(
                   padding: const EdgeInsets.all(12),
@@ -268,9 +277,10 @@ class _MoodDetailScreenState extends State<MoodDetailScreen> {
                   onPressed: () => Navigator.of(context).pop(),
                   icon: const Icon(Icons.arrow_back_ios_new_rounded),
                   color: widget.definition.color,
+                    ),
+                  ),
                 ),
               ),
-            ),
           ),
         ],
       ),
