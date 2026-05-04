@@ -86,7 +86,7 @@ class _TestDetailScreenState extends State<TestDetailScreen> {
               ),
               Expanded(
                 child: SingleChildScrollView(
-                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
+                  padding: const EdgeInsets.fromLTRB(20, 10, 20, 24),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -298,15 +298,15 @@ class ResultScreen extends StatelessWidget {
   List<Color> _resultGradientColors(String level) {
     switch (level) {
       case 'Sangat Tinggi':
-        return const [Color(0xFFE05C5C), Color(0xFFF08B78)];
+        return const [Color(0xFFBF2F4A), Color(0xFFFF8A5B)];
       case 'Tinggi':
-        return const [Color(0xFFF3A33D), Color(0xFFF6C35D)];
+        return const [Color(0xFFDB7C1B), Color(0xFFFFC857)];
       case 'Sedang':
-        return const [Color(0xFF5C6BC0), Color(0xFF8A95DD)];
+        return const [Color(0xFF4F5BCB), Color(0xFF9CA7F5)];
       case 'Rendah':
-        return const [Color(0xFF5FB878), Color(0xFF8BD49E)];
+        return const [Color(0xFF2E9E6F), Color(0xFF8DE0B1)];
       default:
-        return const [Color(0xFF40A2A2), Color(0xFF7BC8C8)];
+        return const [Color(0xFF2E8E9A), Color(0xFF84D8DB)];
     }
   }
 
@@ -344,7 +344,7 @@ class ResultScreen extends StatelessWidget {
               ),
               Expanded(
                 child: SingleChildScrollView(
-                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
+                  padding: const EdgeInsets.fromLTRB(20, 10, 20, 24),
                   child: Column(
                     children: [
                       SectionAccentCard(

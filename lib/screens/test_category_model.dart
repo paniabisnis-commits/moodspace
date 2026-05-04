@@ -82,4 +82,51 @@ const List<TestCategory> testCategories = [
       ),
     ],
   ),
+  TestCategory(
+    title: 'Tes Burnout',
+    icon: Icons.battery_alert_rounded,
+    color: Color(0xFF8D6E63),
+    description: 'Kenali tanda lelah mental berkepanjangan.',
+    questions: [
+      TestQuestion(text: 'Saya merasa lelah bahkan setelah beristirahat.'),
+      TestQuestion(
+        text: 'Motivasi saya menurun dalam beberapa waktu terakhir.',
+      ),
+      TestQuestion(text: 'Saya merasa kosong saat menjalani aktivitas harian.'),
+      TestQuestion(text: 'Tugas kecil terasa jauh lebih berat dari biasanya.'),
+      TestQuestion(
+        text: 'Saya sulit merasa antusias pada hal yang dulu menyenangkan.',
+      ),
+    ],
+  ),
+  TestCategory(
+    title: 'Tes Fokus',
+    icon: Icons.center_focus_strong_rounded,
+    color: Color(0xFF4DB6AC),
+    description: 'Lihat seberapa stabil konsentrasimu sehari-hari.',
+    questions: [
+      TestQuestion(text: 'Saya mudah terdistraksi saat mengerjakan sesuatu.'),
+      TestQuestion(
+        text: 'Saya sering lupa hal yang baru saja ingin saya lakukan.',
+      ),
+      TestQuestion(text: 'Saya sulit mempertahankan fokus dalam waktu lama.'),
+      TestQuestion(
+        text: 'Saya sering berpindah tugas sebelum satu tugas selesai.',
+      ),
+      TestQuestion(text: 'Saya merasa pikiran saya mudah bercabang.'),
+    ],
+  ),
+  TestCategory(
+    title: 'Tes Self-Esteem',
+    icon: Icons.workspace_premium_rounded,
+    color: Color(0xFFBA68C8),
+    description: 'Pahami bagaimana kamu memandang nilai dirimu.',
+    questions: [
+      TestQuestion(text: 'Saya merasa diri saya cukup berharga.'),
+      TestQuestion(text: 'Saya sering meragukan kemampuan diri sendiri.'),
+      TestQuestion(text: 'Saya bisa menghargai pencapaian kecil saya.'),
+      TestQuestion(text: 'Saya mudah membandingkan diri dengan orang lain.'),
+      TestQuestion(text: 'Saya percaya saya pantas mendapatkan hal baik.'),
+    ],
+  ),
 ];

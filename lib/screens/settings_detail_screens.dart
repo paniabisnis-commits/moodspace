@@ -121,7 +121,7 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
                 ),
                 const SizedBox(height: 12),
                 const Text(
-                  'Pilih ikon favorit yang paling menggambarkan energi dan kenyamanan dirimu.',
+                  'Pilih avatar yang paling terasa mewakili suasana hati dan karakter dirimu.',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 13,
@@ -629,7 +629,7 @@ class _DetailScaffold extends StatelessWidget {
               ),
               Expanded(
                 child: SingleChildScrollView(
-                  padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
+                  padding: const EdgeInsets.fromLTRB(20, 14, 20, 24),
                   child: child,
                 ),
               ),

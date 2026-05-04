@@ -56,7 +56,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
             ),
             SliverToBoxAdapter(
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
+                padding: const EdgeInsets.fromLTRB(20, 10, 20, 12),
                 child: Column(
                   children: [
                     SectionAccentCard(
