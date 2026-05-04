@@ -3,10 +3,38 @@ import 'package:flutter/material.dart';
 import 'mood_decor.dart';
 import 'mood_model.dart';
 
-class ProfileDetailScreen extends StatefulWidget {
-  const ProfileDetailScreen({super.key, required this.userName});
+const List<IconData> profileAvatarOptions = [
+  Icons.spa_rounded,
+  Icons.self_improvement_rounded,
+  Icons.favorite_rounded,
+  Icons.local_florist_rounded,
+  Icons.bedtime_rounded,
+  Icons.wb_sunny_rounded,
+  Icons.diversity_1_rounded,
+  Icons.water_drop_rounded,
+  Icons.air_rounded,
+  Icons.auto_awesome_rounded,
+];
+
+class ProfileSettingsResult {
+  const ProfileSettingsResult({
+    required this.userName,
+    required this.avatarIndex,
+  });
 
   final String userName;
+  final int avatarIndex;
+}
+
+class ProfileDetailScreen extends StatefulWidget {
+  const ProfileDetailScreen({
+    super.key,
+    required this.userName,
+    required this.avatarIndex,
+  });
+
+  final String userName;
+  final int avatarIndex;
 
   @override
   State<ProfileDetailScreen> createState() => _ProfileDetailScreenState();
@@ -16,19 +44,11 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
   late final TextEditingController _nameController;
   int selectedAvatar = 0;
 
-  static const List<IconData> avatarOptions = [
-    Icons.sentiment_very_satisfied_rounded,
-    Icons.pets_rounded,
-    Icons.local_florist_rounded,
-    Icons.star_rounded,
-    Icons.auto_awesome_rounded,
-    Icons.emoji_emotions_rounded,
-  ];
-
   @override
   void initState() {
     super.initState();
     _nameController = TextEditingController(text: widget.userName);
+    selectedAvatar = widget.avatarIndex;
   }
 
   @override
@@ -46,6 +66,7 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
       accentColor: appPrimary,
       child: Column(
         children: [
+          const SizedBox(height: 8),
           SectionAccentCard(
             child: Column(
               children: [
@@ -53,49 +74,60 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
                   radius: 42,
                   backgroundColor: const Color(0xFFE7EBFB),
                   child: Icon(
-                    avatarOptions[selectedAvatar],
+                    profileAvatarOptions[selectedAvatar],
                     size: 44,
                     color: appPrimary,
                   ),
                 ),
                 const SizedBox(height: 18),
-                Wrap(
-                  spacing: 10,
-                  runSpacing: 10,
-                  children: List.generate(avatarOptions.length, (index) {
-                    final selected = selectedAvatar == index;
-                    return InkWell(
-                      borderRadius: BorderRadius.circular(999),
-                      onTap: () => setState(() => selectedAvatar = index),
-                      child: AnimatedContainer(
-                        duration: const Duration(milliseconds: 220),
-                        width: 48,
-                        height: 48,
-                        decoration: BoxDecoration(
-                          color: selected
-                              ? appPrimary.withValues(alpha: 0.14)
-                              : const Color(0xFFF4F6FD),
-                          shape: BoxShape.circle,
-                          border: Border.all(
+                SectionAccentCard(
+                  padding: const EdgeInsets.all(14),
+                  accentColor: appPrimary,
+                  child: Wrap(
+                    spacing: 10,
+                    runSpacing: 10,
+                    children: List.generate(profileAvatarOptions.length, (
+                      index,
+                    ) {
+                      final selected = selectedAvatar == index;
+                      return InkWell(
+                        borderRadius: BorderRadius.circular(999),
+                        onTap: () => setState(() => selectedAvatar = index),
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 220),
+                          width: 48,
+                          height: 48,
+                          decoration: BoxDecoration(
+                            color: selected
+                                ? appPrimary.withValues(alpha: 0.14)
+                                : const Color(0xFFF4F6FD),
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: selected
+                                  ? appPrimary
+                                  : const Color(0xFFE0E6F7),
+                            ),
+                          ),
+                          child: Icon(
+                            profileAvatarOptions[index],
                             color: selected
                                 ? appPrimary
-                                : const Color(0xFFE0E6F7),
+                                : const Color(0xFF8590B2),
                           ),
                         ),
-                        child: Icon(
-                          avatarOptions[index],
-                          color: selected
-                              ? appPrimary
-                              : const Color(0xFF8590B2),
-                        ),
-                      ),
-                    );
-                  }),
+                      );
+                    }),
+                  ),
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 12),
                 const Text(
-                  'Pilih avatar lucu yang otomatis disediakan aplikasi.',
-                  style: TextStyle(fontSize: 13, color: Color(0xFF7882A2)),
+                  'Pilih ikon favorit yang paling menggambarkan energi dan kenyamanan dirimu.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: Color(0xFF7882A2),
+                    height: 1.4,
+                  ),
                 ),
                 const SizedBox(height: 18),
                 TextField(
@@ -120,8 +152,12 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
-              onPressed: () =>
-                  Navigator.of(context).pop(_nameController.text.trim()),
+              onPressed: () => Navigator.of(context).pop(
+                ProfileSettingsResult(
+                  userName: _nameController.text.trim(),
+                  avatarIndex: selectedAvatar,
+                ),
+              ),
               child: const Text('Simpan Perubahan'),
             ),
           ),
@@ -154,6 +190,7 @@ class _NotificationSettingsScreenState
       accentColor: appPrimary,
       child: Column(
         children: [
+          const SizedBox(height: 8),
           _switchCard(
             title: 'Pengingat Harian',
             subtitle: 'Bantu kamu check-in mood setiap hari.',
@@ -217,6 +254,7 @@ class _SecuritySettingsScreenState extends State<SecuritySettingsScreen> {
       accentColor: appPrimary,
       child: Column(
         children: [
+          const SizedBox(height: 8),
           SectionAccentCard(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -332,6 +370,7 @@ class _SecuritySetupScreenState extends State<SecuritySetupScreen> {
       accentColor: appPrimary,
       child: Column(
         children: [
+          const SizedBox(height: 8),
           if (widget.type == 'PIN')
             SectionAccentCard(
               child: TextField(
@@ -348,7 +387,7 @@ class _SecuritySetupScreenState extends State<SecuritySetupScreen> {
               child: Column(
                 children: [
                   const Text(
-                    'Buat pola seperti sandi pola HP dengan memilih titik berurutan.',
+                    'Buat pola dengan memilih titik secara berurutan untuk membuka aplikasi.',
                     style: TextStyle(color: Color(0xFF6E7897)),
                     textAlign: TextAlign.center,
                   ),
@@ -452,6 +491,7 @@ class ExportDataScreen extends StatelessWidget {
       accentColor: appPrimary,
       child: Column(
         children: [
+          const SizedBox(height: 8),
           _exportCard(
             context,
             label: 'Ekspor ke PDF',
@@ -589,7 +629,7 @@ class _DetailScaffold extends StatelessWidget {
               ),
               Expanded(
                 child: SingleChildScrollView(
-                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
+                  padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
                   child: child,
                 ),
               ),

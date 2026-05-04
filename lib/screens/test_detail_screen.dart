@@ -295,9 +295,25 @@ class ResultScreen extends StatelessWidget {
     }
   }
 
+  List<Color> _resultGradientColors(String level) {
+    switch (level) {
+      case 'Sangat Tinggi':
+        return const [Color(0xFFE05C5C), Color(0xFFF08B78)];
+      case 'Tinggi':
+        return const [Color(0xFFF3A33D), Color(0xFFF6C35D)];
+      case 'Sedang':
+        return const [Color(0xFF5C6BC0), Color(0xFF8A95DD)];
+      case 'Rendah':
+        return const [Color(0xFF5FB878), Color(0xFF8BD49E)];
+      default:
+        return const [Color(0xFF40A2A2), Color(0xFF7BC8C8)];
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final levelColor = _getLevelColor(resultModel.level);
+    final gradientColors = _resultGradientColors(resultModel.level);
     return Scaffold(
       backgroundColor: appBackground,
       body: MoodDecorBackground(
@@ -336,41 +352,61 @@ class ResultScreen extends StatelessWidget {
                         child: Column(
                           children: [
                             Container(
-                              width: 64,
-                              height: 64,
+                              width: double.infinity,
+                              padding: const EdgeInsets.all(20),
                               decoration: BoxDecoration(
-                                color: levelColor.withValues(alpha: 0.14),
-                                shape: BoxShape.circle,
+                                gradient: LinearGradient(
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                  colors: gradientColors,
+                                ),
+                                borderRadius: BorderRadius.circular(24),
                               ),
-                              child: Icon(
-                                Icons.psychology_alt_rounded,
-                                color: levelColor,
-                                size: 34,
+                              child: Column(
+                                children: [
+                                  Container(
+                                    width: 64,
+                                    height: 64,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white.withValues(
+                                        alpha: 0.18,
+                                      ),
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: const Icon(
+                                      Icons.psychology_alt_rounded,
+                                      color: Colors.white,
+                                      size: 34,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 14),
+                                  Text(
+                                    resultModel.testName,
+                                    textAlign: TextAlign.center,
+                                    style: const TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    resultModel.level,
+                                    style: const TextStyle(
+                                      fontSize: 28,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 6),
+                                  Text(
+                                    'Skor ${resultModel.totalScore.toStringAsFixed(1)} dari 100',
+                                    style: const TextStyle(
+                                      color: Colors.white70,
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ),
-                            const SizedBox(height: 14),
-                            Text(
-                              resultModel.testName,
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w700,
-                                color: appInk,
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              resultModel.level,
-                              style: TextStyle(
-                                fontSize: 28,
-                                fontWeight: FontWeight.bold,
-                                color: levelColor,
-                              ),
-                            ),
-                            const SizedBox(height: 6),
-                            Text(
-                              'Skor ${resultModel.totalScore.toStringAsFixed(1)} dari 100',
-                              style: const TextStyle(color: Color(0xFF6D7695)),
                             ),
                           ],
                         ),

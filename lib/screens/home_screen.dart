@@ -23,6 +23,7 @@ class _HomeScreenState extends State<HomeScreen> {
   MoodModel? currentMood;
   String energyLevel = 'Sedang';
   String userName = '';
+  int selectedAvatarIndex = 0;
   final List<MoodModel> moodHistory = [];
   final List<result_model.TestResultModel> testHistory = [];
   final Set<String> selectedInfluences = {};
@@ -340,13 +341,21 @@ class _HomeScreenState extends State<HomeScreen> {
               ElevatedButton.icon(
                 onPressed: () async {
                   Navigator.of(context).pop();
-                  final updated = await Navigator.of(context).push<String>(
-                    MaterialPageRoute(
-                      builder: (_) => ProfileDetailScreen(userName: userName),
-                    ),
-                  );
-                  if (updated != null && updated.isNotEmpty) {
-                    setState(() => userName = updated);
+                  final updated = await Navigator.of(context)
+                      .push<ProfileSettingsResult>(
+                        MaterialPageRoute(
+                          builder: (_) => ProfileDetailScreen(
+                            userName: userName,
+                            avatarIndex: selectedAvatarIndex,
+                          ),
+                        ),
+                      );
+                  if (updated is ProfileSettingsResult &&
+                      updated.userName.isNotEmpty) {
+                    setState(() {
+                      userName = updated.userName;
+                      selectedAvatarIndex = updated.avatarIndex;
+                    });
                   }
                 },
                 icon: const Icon(Icons.person_outline_rounded),
@@ -665,8 +674,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       body: stats['activities']!,
                       primaryLabel: 'Lihat Aktivitas',
                       onPrimaryTap: () => _showSimpleDialog(
-                        'Dampak Aktivitas',
-                        stats['activities']!,
+                        'Aktivitas yang Paling Berpengaruh',
+                        _activityInsightText(),
                       ),
                       secondaryLabel: 'Ringkasan Energi',
                       onSecondaryTap: () => _showSimpleDialog(
@@ -756,11 +765,11 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: SectionAccentCard(
                         child: Row(
                           children: [
-                            const CircleAvatar(
+                            CircleAvatar(
                               radius: 26,
-                              backgroundColor: Color(0xFFE6EAFA),
+                              backgroundColor: const Color(0xFFE6EAFA),
                               child: Icon(
-                                Icons.person_rounded,
+                                profileAvatarOptions[selectedAvatarIndex],
                                 color: appPrimary,
                               ),
                             ),
@@ -864,13 +873,19 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _openProfileDetail() async {
-    final updated = await Navigator.of(context).push<String>(
+    final updated = await Navigator.of(context).push<ProfileSettingsResult>(
       MaterialPageRoute(
-        builder: (_) => ProfileDetailScreen(userName: userName),
+        builder: (_) => ProfileDetailScreen(
+          userName: userName,
+          avatarIndex: selectedAvatarIndex,
+        ),
       ),
     );
-    if (updated != null && updated.isNotEmpty) {
-      setState(() => userName = updated);
+    if (updated != null && updated.userName.isNotEmpty) {
+      setState(() {
+        userName = updated.userName;
+        selectedAvatarIndex = updated.avatarIndex;
+      });
     }
   }
 
@@ -1105,14 +1120,100 @@ class _HomeScreenState extends State<HomeScreen> {
       _showSimpleDialog('Riwayat Tes', 'Belum ada hasil tes.');
       return;
     }
+    showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      builder: (context) {
+        return Padding(
+          padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Riwayat Tes',
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: appInk,
+                ),
+              ),
+              const SizedBox(height: 14),
+              ...testHistory.reversed.map((test) {
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: SectionAccentCard(
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 44,
+                          height: 44,
+                          decoration: BoxDecoration(
+                            color: appPrimary.withValues(alpha: 0.12),
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(
+                            Icons.psychology_alt_rounded,
+                            color: appPrimary,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                test.testName,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w700,
+                                  color: appInk,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                'Hasil akhir: ${test.level} • Skor ${test.totalScore.toStringAsFixed(1)}',
+                                style: const TextStyle(
+                                  color: Color(0xFF6D7695),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }),
+            ],
+          ),
+        );
+      },
+    );
+  }
 
-    final text = testHistory
-        .map((e) {
-          return '${e.testName} - ${e.level} (${e.date.day}/${e.date.month})';
-        })
-        .join('\n');
+  String _activityInsightText() {
+    if (moodHistory.isEmpty) {
+      return 'Belum ada aktivitas yang cukup untuk dianalisis. Coba catat mood beserta aktivitasmu beberapa hari lagi.';
+    }
 
-    _showSimpleDialog('Riwayat Tes', text);
+    final counts = <String, int>{};
+    for (final mood in moodHistory) {
+      for (final activity in mood.activities) {
+        counts.update(activity, (value) => value + 1, ifAbsent: () => 1);
+      }
+    }
+    if (counts.isEmpty) {
+      return 'Kamu sudah mencatat mood, tapi belum banyak aktivitas yang dipilih. Tambahkan aktivitas supaya insight ini lebih akurat.';
+    }
+
+    final sorted = counts.entries.toList()
+      ..sort((a, b) => b.value.compareTo(a.value));
+    final primary = sorted.first;
+    final secondary = sorted.length > 1 ? sorted[1] : null;
+
+    return secondary == null
+        ? 'Aktivitas yang paling sering muncul bersama catatan mood kamu adalah ${primary.key.toLowerCase()} sebanyak ${primary.value} kali. Aktivitas ini tampaknya cukup berpengaruh pada ritme emosimu.'
+        : 'Dua aktivitas yang paling sering muncul adalah ${primary.key.toLowerCase()} (${primary.value} kali) dan ${secondary.key.toLowerCase()} (${secondary.value} kali). Coba perhatikan bagaimana keduanya memengaruhi energi dan suasana hatimu.';
   }
 }
 
