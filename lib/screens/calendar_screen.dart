@@ -41,8 +41,20 @@ class _CalendarScreenState extends State<CalendarScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const MoodHeadline('Kalender Mood'),
-              const SizedBox(height: 18),
+              MoodHeader(
+                  title: 'Kalender Mood',
+                  subtitle: 'Pantau catatan emosimu',
+                  icon: Icons.calendar_month_rounded,
+                  accentColor: appPrimary,
+                ),
+                const SizedBox(height: 20),
+
+                Divider(
+                  color: Colors.grey.shade200,
+                  thickness: 1,
+                ),
+
+                const SizedBox(height: 16),
               SectionAccentCard(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 14,
@@ -326,13 +338,13 @@ class _CalendarScreenState extends State<CalendarScreen> {
                           ),
                         ],
                       ),
+                    ),
+                  ],
+                ),
               ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
+            ),
+          );
+        }
 
   MoodModel? _getMoodForDate(DateTime date) {
     for (final mood in widget.moodHistory) {

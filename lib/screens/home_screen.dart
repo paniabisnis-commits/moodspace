@@ -347,6 +347,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 'Hai ${widget.userName}, terus lanjutkan perjalanan refleksimu bersama MoodSpace.',
                 style: const TextStyle(color: Color(0xFF657091), height: 1.5),
               ),
+              const SizedBox(height: 20),
+
+              Divider(
+                color: Colors.grey.shade200,
+                thickness: 1,
+              ),
+
               const SizedBox(height: 16),
               ElevatedButton.icon(
                 onPressed: () {
@@ -381,8 +388,25 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
 
             
+            const SizedBox(height: 20),
+
+            Divider(
+              color: Colors.grey.shade200,
+              thickness: 1,
+            ),
+
             const SizedBox(height: 16),
             SegmentedButton<String>(
+
+              style: ButtonStyle(
+                backgroundColor: WidgetStateProperty.resolveWith((states) {
+                  if (states.contains(WidgetState.selected)) {
+                    return appPrimary.withValues(alpha: 0.15);
+                  }
+                  return Colors.grey.shade100;
+                }),
+                foregroundColor: WidgetStateProperty.all(appPrimary),
+              ),
               segments: const [
                 ButtonSegment(value: 'Mingguan', label: Text('Mingguan')),
                 ButtonSegment(value: 'Bulanan', label: Text('Bulanan')),
@@ -405,6 +429,13 @@ class _HomeScreenState extends State<HomeScreen> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
+                  const SizedBox(height: 20),
+
+                  Divider(
+                    color: Colors.grey.shade200,
+                    thickness: 1,
+                  ),
+
                   const SizedBox(height: 16),
                   ...moodDefinitions.map((definition) {
                     final count = moodCount[definition.label] ?? 0;
@@ -503,9 +534,32 @@ class _HomeScreenState extends State<HomeScreen> {
         child: ListView(
           padding: const EdgeInsets.fromLTRB(20, 18, 20, 12),
           children: [
-            const MoodHeadline('Tren Perasaanmu'),
+            MoodHeader(
+              title: 'Pola Perasaanmu',
+              subtitle: 'Statistik emosimu',
+              icon: Icons.bar_chart_rounded,
+              accentColor: appPrimary,
+            ),
+            const SizedBox(height: 20),
+
+            Divider(
+              color: Colors.grey.shade200,
+              thickness: 1,
+            ),
+
             const SizedBox(height: 16),
             SegmentedButton<String>(
+
+              style: ButtonStyle(
+                backgroundColor: WidgetStateProperty.resolveWith((states) {
+                  if (states.contains(WidgetState.selected)) {
+                    return appPrimary.withValues(alpha: 0.15);
+                  }
+                  return Colors.grey.shade100;
+                }),
+                foregroundColor: WidgetStateProperty.all(appPrimary),
+              ),
+
               segments: const [
                 ButtonSegment(value: 'Mingguan', label: Text('Mingguan')),
                 ButtonSegment(value: 'Bulanan', label: Text('Bulanan')),
@@ -527,6 +581,13 @@ class _HomeScreenState extends State<HomeScreen> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
+                  const SizedBox(height: 20),
+
+                  Divider(
+                    color: Colors.grey.shade200,
+                    thickness: 1,
+                  ),
+
                   const SizedBox(height: 16),
                   SizedBox(
                     height: 170,
@@ -543,7 +604,8 @@ class _HomeScreenState extends State<HomeScreen> {
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
                                 AnimatedContainer(
-                                  duration: const Duration(milliseconds: 300),
+                                  duration: const Duration(milliseconds: 400),
+                                  curve: Curves.easeOut,
                                   height: height,
                                   decoration: BoxDecoration(
                                     gradient: LinearGradient(
@@ -575,6 +637,13 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             const SizedBox(height: 14),
             SectionAccentCard(
+              padding: const EdgeInsets.all(18),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: appPrimary.withValues(alpha: 0.08),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                padding: const EdgeInsets.all(12),
               child: Row(
                 children: [
                   const Icon(
@@ -608,8 +677,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       stats['topMood']!,
                     ),
                     child: const Text('Pelajari Tren'),
-                  ),
-                ],
+                    ),
+                  ],
+                ),
               ),
             ),
             const SizedBox(height: 14),
@@ -650,8 +720,16 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     const SizedBox(height: 12),
 
-                    if (testHistory.isEmpty)
-                      const Text('Belum ada hasil tes'),
+                    Column(
+                      children: [
+                        Icon(Icons.psychology_outlined, size: 40, color: Colors.grey),
+                        SizedBox(height: 10),
+                        Text(
+                          'Belum ada hasil tes',
+                          style: TextStyle(color: Colors.grey),
+                        ),
+                      ],
+                    ),
                     
                     ...testHistory.map((test) {
                       return Padding(
@@ -673,9 +751,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                       width: 80,
                                       child: Text(e.key),
                                     ),
-                                    Expanded(
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(10),
                                       child: LinearProgressIndicator(
-                                        value: e.value / 100, 
+                                        value: e.value / 100,
+                                        minHeight: 8,
+                                        backgroundColor: Colors.grey.shade200,
+                                        color: appPrimary,
                                       ),
                                     ),
                                     const SizedBox(width: 8),
@@ -725,7 +807,12 @@ class _HomeScreenState extends State<HomeScreen> {
         child: ListView(
           padding: const EdgeInsets.fromLTRB(20, 18, 20, 12),
           children: [
-            const MoodHeadline('Pengaturan'),
+            MoodHeader(
+              title: 'Preferensi Kamu',
+              subtitle: 'Atur pengalamanmu',
+              icon: Icons.settings_rounded,
+              accentColor: appPrimary,
+            ),
             const SizedBox(height: 18),
             SectionAccentCard(
               padding: const EdgeInsets.all(18),
@@ -975,7 +1062,9 @@ class _HomeScreenState extends State<HomeScreen> {
     required String secondaryLabel,
     required VoidCallback onSecondaryTap,
   }) {
-    return SectionAccentCard(
+    return AnimatedContainer(
+  duration: Duration(milliseconds: 200),
+  child: SectionAccentCard(
       padding: const EdgeInsets.all(18),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -989,17 +1078,23 @@ class _HomeScreenState extends State<HomeScreen> {
             body,
             style: const TextStyle(height: 1.5, color: Color(0xFF697391)),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 20),
+
+            Divider(
+              color: Colors.grey.shade200,
+              thickness: 1,
+            ),
+
+            const SizedBox(height: 16),
           Row(
             children: [
               Expanded(
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
+                    backgroundColor: appPrimary,
+                    foregroundColor: Colors.white,
+                    elevation: 0,
                     padding: const EdgeInsets.symmetric(vertical: 14),
-                    textStyle: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                    ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(14),
                     ),
@@ -1012,22 +1107,21 @@ class _HomeScreenState extends State<HomeScreen> {
               Expanded(
                 child: OutlinedButton(
                   style: OutlinedButton.styleFrom(
+                    side: BorderSide(color: appPrimary.withValues(alpha: 0.4)),
+                    foregroundColor: appPrimary,
                     padding: const EdgeInsets.symmetric(vertical: 14),
-                    textStyle: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                    ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(14),
                     ),
                   ),
                   onPressed: onSecondaryTap,
                   child: Text(secondaryLabel),
+                  ),
                 ),
-              ),
-            ],
-          )
-        ],
+              ],
+            )
+          ],
+        ),
       ),
     );
   }
