@@ -64,21 +64,21 @@ class _TestDetailScreenState extends State<TestDetailScreen> {
             children: [
               Padding(
                 padding: const EdgeInsets.fromLTRB(20, 18, 20, 12),
-                child: Stack(
+                child: Row(
                   children: [
-                    MoodHeader(
-                      title: widget.category.title,
-                      subtitle: 'Jawab dengan jujur agar insight lebih akurat',
-                      icon: widget.category.icon,
-                      accentColor: widget.category.color,
-                      compact: true,
+                    ScreenBackButton(
+                      onTap: () => Navigator.of(context).pop(),
+                      color: widget.category.color,
                     ),
-                    Positioned(
-                      left: 10,
-                      top: 10,
-                      child: ScreenBackButton(
-                        onTap: () => Navigator.of(context).pop(),
-                        color: widget.category.color,
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: MoodHeader(
+                        title: widget.category.title,
+                        subtitle:
+                            'Jawab dengan jujur agar insight lebih akurat',
+                        icon: widget.category.icon,
+                        accentColor: widget.category.color,
+                        compact: true,
                       ),
                     ),
                   ],
@@ -307,21 +307,20 @@ class ResultScreen extends StatelessWidget {
             children: [
               Padding(
                 padding: const EdgeInsets.fromLTRB(20, 18, 20, 12),
-                child: Stack(
+                child: Row(
                   children: [
-                    MoodHeader(
-                      title: 'Hasil Tes',
-                      subtitle: 'Ringkasan dari jawabanmu',
-                      icon: Icons.auto_graph_rounded,
-                      accentColor: levelColor,
-                      compact: true,
+                    ScreenBackButton(
+                      onTap: () => Navigator.of(context).pop(),
+                      color: levelColor,
                     ),
-                    Positioned(
-                      left: 10,
-                      top: 10,
-                      child: ScreenBackButton(
-                        onTap: () => Navigator.of(context).pop(),
-                        color: levelColor,
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: MoodHeader(
+                        title: 'Hasil Tes',
+                        subtitle: 'Ringkasan dari jawabanmu',
+                        icon: Icons.auto_graph_rounded,
+                        accentColor: levelColor,
+                        compact: true,
                       ),
                     ),
                   ],
@@ -445,25 +444,12 @@ class ResultScreen extends StatelessWidget {
                           children: resultModel.recommendations.map((rec) {
                             return Padding(
                               padding: const EdgeInsets.only(bottom: 10),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Icon(
-                                    Icons.check_circle_rounded,
-                                    color: levelColor,
-                                    size: 18,
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Expanded(
-                                    child: Text(
-                                      rec,
-                                      style: const TextStyle(
-                                        color: Color(0xFF697391),
-                                        height: 1.5,
-                                      ),
-                                    ),
-                                  ),
-                                ],
+                              child: Text(
+                                rec,
+                                style: const TextStyle(
+                                  color: Color(0xFF697391),
+                                  height: 1.5,
+                                ),
                               ),
                             );
                           }).toList(),

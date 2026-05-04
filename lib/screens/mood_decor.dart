@@ -102,41 +102,7 @@ class SectionAccentCard extends StatelessWidget {
           ),
         ],
       ),
-      child: Stack(
-        children: [
-          Positioned(
-            top: -10,
-            right: -6,
-            child: Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                color: accentColor.withValues(alpha: 0.06),
-                shape: BoxShape.circle,
-              ),
-            ),
-          ),
-          Positioned(
-            bottom: -8,
-            left: -8,
-            child: Transform.rotate(
-              angle: -0.28,
-              child: Container(
-                width: 30,
-                height: 30,
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: accentColor.withValues(alpha: 0.08),
-                    width: 1.5,
-                  ),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-            ),
-          ),
-          child,
-        ],
-      ),
+      child: child,
     );
   }
 }
@@ -160,7 +126,10 @@ class MoodHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(compact ? 16 : 20),
+      padding: EdgeInsets.symmetric(
+        horizontal: compact ? 18 : 20,
+        vertical: compact ? 18 : 22,
+      ),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(28),
         gradient: LinearGradient(
@@ -178,6 +147,7 @@ class MoodHeader extends StatelessWidget {
         ],
       ),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
             width: compact ? 46 : 54,
@@ -191,6 +161,7 @@ class MoodHeader extends StatelessWidget {
           const SizedBox(width: 16),
           Expanded(
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
@@ -201,7 +172,8 @@ class MoodHeader extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                if (subtitle != null)
+                if (subtitle != null) ...[
+                  const SizedBox(height: 2),
                   Text(
                     subtitle!,
                     style: TextStyle(
@@ -209,6 +181,7 @@ class MoodHeader extends StatelessWidget {
                       fontSize: compact ? 12 : 13,
                     ),
                   ),
+                ],
               ],
             ),
           ),

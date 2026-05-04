@@ -14,6 +14,16 @@ class ProfileDetailScreen extends StatefulWidget {
 
 class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
   late final TextEditingController _nameController;
+  int selectedAvatar = 0;
+
+  static const List<IconData> avatarOptions = [
+    Icons.sentiment_very_satisfied_rounded,
+    Icons.pets_rounded,
+    Icons.local_florist_rounded,
+    Icons.star_rounded,
+    Icons.auto_awesome_rounded,
+    Icons.emoji_emotions_rounded,
+  ];
 
   @override
   void initState() {
@@ -39,42 +49,53 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
           SectionAccentCard(
             child: Column(
               children: [
-                Stack(
-                  children: [
-                    const CircleAvatar(
-                      radius: 42,
-                      backgroundColor: Color(0xFFE7EBFB),
-                      child: Icon(
-                        Icons.person_rounded,
-                        size: 44,
-                        color: appPrimary,
-                      ),
-                    ),
-                    Positioned(
-                      right: 0,
-                      bottom: 0,
-                      child: Material(
-                        color: appPrimary,
-                        shape: const CircleBorder(),
-                        child: IconButton(
-                          onPressed: () {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text(
-                                  'Fitur ganti avatar siap dipakai.',
-                                ),
-                              ),
-                            );
-                          },
-                          icon: const Icon(
-                            Icons.edit_rounded,
-                            color: Colors.white,
-                            size: 18,
+                CircleAvatar(
+                  radius: 42,
+                  backgroundColor: const Color(0xFFE7EBFB),
+                  child: Icon(
+                    avatarOptions[selectedAvatar],
+                    size: 44,
+                    color: appPrimary,
+                  ),
+                ),
+                const SizedBox(height: 18),
+                Wrap(
+                  spacing: 10,
+                  runSpacing: 10,
+                  children: List.generate(avatarOptions.length, (index) {
+                    final selected = selectedAvatar == index;
+                    return InkWell(
+                      borderRadius: BorderRadius.circular(999),
+                      onTap: () => setState(() => selectedAvatar = index),
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 220),
+                        width: 48,
+                        height: 48,
+                        decoration: BoxDecoration(
+                          color: selected
+                              ? appPrimary.withValues(alpha: 0.14)
+                              : const Color(0xFFF4F6FD),
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: selected
+                                ? appPrimary
+                                : const Color(0xFFE0E6F7),
                           ),
                         ),
+                        child: Icon(
+                          avatarOptions[index],
+                          color: selected
+                              ? appPrimary
+                              : const Color(0xFF8590B2),
+                        ),
                       ),
-                    ),
-                  ],
+                    );
+                  }),
+                ),
+                const SizedBox(height: 10),
+                const Text(
+                  'Pilih avatar lucu yang otomatis disediakan aplikasi.',
+                  style: TextStyle(fontSize: 13, color: Color(0xFF7882A2)),
                 ),
                 const SizedBox(height: 18),
                 TextField(
@@ -294,6 +315,7 @@ class SecuritySetupScreen extends StatefulWidget {
 
 class _SecuritySetupScreenState extends State<SecuritySetupScreen> {
   final TextEditingController _controller = TextEditingController();
+  final List<int> selectedDots = [];
 
   @override
   void dispose() {
@@ -310,23 +332,100 @@ class _SecuritySetupScreenState extends State<SecuritySetupScreen> {
       accentColor: appPrimary,
       child: Column(
         children: [
-          SectionAccentCard(
-            child: TextField(
-              controller: _controller,
-              obscureText: widget.type == 'PIN',
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                labelText: widget.type == 'PIN'
-                    ? 'Masukkan 4 digit PIN'
-                    : 'Masukkan kata kunci pola',
+          if (widget.type == 'PIN')
+            SectionAccentCard(
+              child: TextField(
+                controller: _controller,
+                obscureText: true,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
+                  labelText: 'Masukkan 4 digit PIN',
+                ),
+              ),
+            )
+          else
+            SectionAccentCard(
+              child: Column(
+                children: [
+                  const Text(
+                    'Buat pola seperti sandi pola HP dengan memilih titik berurutan.',
+                    style: TextStyle(color: Color(0xFF6E7897)),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 18),
+                  SizedBox(
+                    width: 220,
+                    height: 220,
+                    child: GridView.builder(
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: 9,
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 3,
+                            mainAxisSpacing: 18,
+                            crossAxisSpacing: 18,
+                          ),
+                      itemBuilder: (context, index) {
+                        final dot = index + 1;
+                        final selected = selectedDots.contains(dot);
+                        return InkWell(
+                          borderRadius: BorderRadius.circular(999),
+                          onTap: () {
+                            setState(() {
+                              if (!selected) {
+                                selectedDots.add(dot);
+                              }
+                            });
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: selected
+                                  ? appPrimary
+                                  : appPrimary.withValues(alpha: 0.12),
+                              shape: BoxShape.circle,
+                            ),
+                            child: Center(
+                              child: Text(
+                                '$dot',
+                                style: TextStyle(
+                                  color: selected ? Colors.white : appPrimary,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  TextButton(
+                    onPressed: () => setState(() => selectedDots.clear()),
+                    child: const Text('Ulangi Pola'),
+                  ),
+                ],
               ),
             ),
-          ),
           const SizedBox(height: 16),
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
               onPressed: () {
+                if (widget.type == 'PIN' &&
+                    _controller.text.trim().length < 4) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('PIN minimal 4 digit.')),
+                  );
+                  return;
+                }
+                if (widget.type == 'Pola' && selectedDots.length < 4) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Pola minimal terdiri dari 4 titik.'),
+                    ),
+                  );
+                  return;
+                }
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text('${widget.type} berhasil disimpan.')),
                 );
@@ -469,21 +568,20 @@ class _DetailScaffold extends StatelessWidget {
             children: [
               Padding(
                 padding: const EdgeInsets.fromLTRB(20, 18, 20, 12),
-                child: Stack(
+                child: Row(
                   children: [
-                    MoodHeader(
-                      title: title,
-                      subtitle: subtitle,
-                      icon: icon,
-                      accentColor: accentColor,
-                      compact: true,
+                    ScreenBackButton(
+                      onTap: () => Navigator.of(context).pop(),
+                      color: accentColor,
                     ),
-                    Positioned(
-                      left: 10,
-                      top: 10,
-                      child: ScreenBackButton(
-                        onTap: () => Navigator.of(context).pop(),
-                        color: accentColor,
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: MoodHeader(
+                        title: title,
+                        subtitle: subtitle,
+                        icon: icon,
+                        accentColor: accentColor,
+                        compact: true,
                       ),
                     ),
                   ],

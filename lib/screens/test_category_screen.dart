@@ -24,21 +24,20 @@ class TestCategoryScreen extends StatelessWidget {
                   height: 120,
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(20, 18, 20, 12),
-                    child: Stack(
+                    child: Row(
                       children: [
-                        const MoodHeader(
-                          title: 'Kategori Tes',
-                          subtitle: 'Pilih tes yang ingin kamu ikuti',
-                          icon: Icons.psychology_alt_rounded,
-                          accentColor: appPrimary,
-                          compact: true,
+                        ScreenBackButton(
+                          onTap: () => Navigator.of(context).pop(),
+                          color: appPrimary,
                         ),
-                        Positioned(
-                          left: 10,
-                          top: 10,
-                          child: ScreenBackButton(
-                            onTap: () => Navigator.of(context).pop(),
-                            color: appPrimary,
+                        const SizedBox(width: 12),
+                        const Expanded(
+                          child: MoodHeader(
+                            title: 'Kategori Tes',
+                            subtitle: 'Pilih tes yang ingin kamu ikuti',
+                            icon: Icons.psychology_alt_rounded,
+                            accentColor: appPrimary,
+                            compact: true,
                           ),
                         ),
                       ],
@@ -53,7 +52,7 @@ class TestCategoryScreen extends StatelessWidget {
                     crossAxisCount: 2,
                     mainAxisSpacing: 14,
                     crossAxisSpacing: 14,
-                    childAspectRatio: 0.85,
+                    childAspectRatio: 0.78,
                   ),
                   itemCount: testCategories.length,
                   itemBuilder: (context, index) {
@@ -81,12 +80,12 @@ class TestCategoryScreen extends StatelessWidget {
                               width: 50,
                               height: 50,
                               decoration: BoxDecoration(
-                                color: appPrimary.withValues(alpha: 0.12),
+                                color: item.color.withValues(alpha: 0.14),
                                 shape: BoxShape.circle,
                               ),
-                              child: const Icon(
-                                Icons.psychology_rounded,
-                                color: appPrimary,
+                              child: Icon(
+                                item.icon,
+                                color: item.color,
                                 size: 26,
                               ),
                             ),
@@ -102,6 +101,8 @@ class TestCategoryScreen extends StatelessWidget {
                             const SizedBox(height: 8),
                             Text(
                               item.description,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
                               style: const TextStyle(
                                 fontSize: 13,
                                 height: 1.4,
@@ -111,11 +112,13 @@ class TestCategoryScreen extends StatelessWidget {
                             const Spacer(),
                             Row(
                               children: const [
-                                Text(
-                                  'Mulai Tes',
-                                  style: TextStyle(
-                                    color: appPrimary,
-                                    fontWeight: FontWeight.w700,
+                                Flexible(
+                                  child: Text(
+                                    'Mulai Tes',
+                                    style: TextStyle(
+                                      color: appPrimary,
+                                      fontWeight: FontWeight.w700,
+                                    ),
                                   ),
                                 ),
                                 SizedBox(width: 6),

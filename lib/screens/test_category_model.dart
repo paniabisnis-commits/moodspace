@@ -40,10 +40,9 @@ const List<TestCategory> testCategories = [
   ),
   TestCategory(
     title: 'Tes Kecemasan',
-    icon: Icons.health_and_safety_rounded,
+    icon: Icons.air_rounded,
     color: Color(0xFFE57373),
-    description:
-        'Lihat seberapa besar kecemasan memengaruhi aktivitas harianmu.',
+    description: 'Lihat pengaruh cemas pada harimu.',
     questions: [
       TestQuestion(text: 'Saya sering merasa gugup tanpa alasan yang jelas.'),
       TestQuestion(text: 'Saya kesulitan rileks sebelum tidur.'),
@@ -54,7 +53,7 @@ const List<TestCategory> testCategories = [
   ),
   TestCategory(
     title: 'Tes Hubungan',
-    icon: Icons.favorite_rounded,
+    icon: Icons.diversity_3_rounded,
     color: Color(0xFFF06292),
     description:
         'Pahami kenyamanan emosimu dalam relasi dengan orang terdekat.',
@@ -68,10 +67,9 @@ const List<TestCategory> testCategories = [
   ),
   TestCategory(
     title: 'Tes Stres',
-    icon: Icons.bolt_rounded,
+    icon: Icons.thermostat_rounded,
     color: Color(0xFFFFB74D),
-    description:
-        'Ukur tekanan harian dan lihat area yang paling menguras energi.',
+    description: 'Ukur tekanan harian dan energimu.',
     questions: [
       TestQuestion(text: 'Saya merasa hari-hari saya berjalan terlalu cepat.'),
       TestQuestion(
