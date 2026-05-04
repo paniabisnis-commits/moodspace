@@ -148,50 +148,57 @@ class HomeContent extends StatelessWidget {
                               ),
                             ],
                           ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: moodDefinitions.map((mood) {
-                              final selected =
-                                  moodDefinition?.label == mood.label;
-                              return InkWell(
-                                borderRadius: BorderRadius.circular(20),
-                                onTap: () => onMoodTap(mood),
-                                child: AnimatedContainer(
-                                  duration: const Duration(milliseconds: 220),
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 8,
-                                    vertical: 6,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: selected
-                                        ? mood.color.withValues(alpha: 0.16)
-                                        : Colors.transparent,
-                                    borderRadius: BorderRadius.circular(18),
-                                  ),
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Icon(
-                                        mood.icon,
-                                        color: mood.color,
-                                        size: selected ? 28 : 24,
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: ConstrainedBox(
+                              constraints: BoxConstraints(
+                                minWidth: MediaQuery.of(context).size.width - 44, // biar full feel
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: moodDefinitions.map((mood) {
+                                  final selected = moodDefinition?.label == mood.label;
+
+                                  return InkWell(
+                                    borderRadius: BorderRadius.circular(20),
+                                    onTap: () => onMoodTap(mood),
+                                    child: AnimatedContainer(
+                                      duration: const Duration(milliseconds: 220),
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 12, // diperbesar
+                                        vertical: 10,
                                       ),
-                                      const SizedBox(height: 4),
-                                      Text(
-                                        mood.label,
-                                        style: TextStyle(
-                                          fontSize: 11,
-                                          fontWeight: selected
-                                              ? FontWeight.w700
-                                              : FontWeight.w500,
-                                          color: const Color(0xFF46506F),
-                                        ),
+                                      decoration: BoxDecoration(
+                                        color: selected
+                                            ? mood.color.withValues(alpha: 0.16)
+                                            : Colors.transparent,
+                                        borderRadius: BorderRadius.circular(18),
                                       ),
-                                    ],
-                                  ),
-                                ),
-                              );
-                            }).toList(),
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Icon(
+                                            mood.icon,
+                                            color: mood.color,
+                                            size: selected ? 30 : 26, // lebih gede
+                                          ),
+                                          const SizedBox(height: 6),
+                                          Text(
+                                            mood.label,
+                                            style: TextStyle(
+                                              fontSize: 12, // konsisten
+                                              fontWeight:
+                                                  selected ? FontWeight.w700 : FontWeight.w500,
+                                              color: const Color(0xFF46506F),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                }).toList(),
+                              ),
+                            ),
                           ),
                         ),
                       ],
@@ -470,21 +477,16 @@ class _ActionCard extends StatelessWidget {
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text(
-                        actionLabel,
-                        style: const TextStyle(
-                          color: appPrimary,
-                          fontWeight: FontWeight.w700,
+                      Flexible(
+                        child: Text(
+                          actionLabel,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                       const SizedBox(width: 4),
-                      const Icon(
-                        Icons.arrow_forward_rounded,
-                        size: 18,
-                        color: appPrimary,
-                      ),
+                      const Icon(Icons.arrow_forward_rounded, size: 18),
                     ],
-                  ),
+                  )
                 ],
               ),
             ),

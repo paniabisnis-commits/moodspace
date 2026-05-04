@@ -24,7 +24,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 24),
             child: Column(
               children: [
-                const SizedBox(height: 25),
+                const SizedBox(height: 50),
                 const Text(
                   'Apa yang ingin kamu capai?',
                   textAlign: TextAlign.center,

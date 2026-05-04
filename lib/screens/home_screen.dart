@@ -5,6 +5,8 @@ import 'home_content.dart';
 import 'mood_decor.dart';
 import 'mood_detail_screen.dart';
 import 'mood_model.dart';
+import 'test_category_screen.dart';
+import 'test_result_model.dart' as result_model;
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key, required this.userName});
@@ -20,9 +22,11 @@ class _HomeScreenState extends State<HomeScreen> {
   MoodModel? currentMood;
   String energyLevel = 'Sedang';
   final List<MoodModel> moodHistory = [];
+  final List<result_model.TestResultModel> testHistory = [];
   final Set<String> selectedInfluences = {};
   String _analysisRange = 'Bulanan';
   String _statisticsRange = 'Mingguan';
+  
 
   @override
   Widget build(BuildContext context) {
@@ -369,7 +373,14 @@ class _HomeScreenState extends State<HomeScreen> {
         child: ListView(
           padding: const EdgeInsets.fromLTRB(20, 18, 20, 12),
           children: [
-            const MoodHeadline('Analisis Suasana Hati'),
+            MoodHeader(
+              title: 'Analisis Suasana Hati',
+              subtitle: 'Pahami pola perasaanmu',
+              icon: Icons.psychology_rounded,
+              accentColor: appPrimary,
+            ),
+
+            
             const SizedBox(height: 16),
             SegmentedButton<String>(
               segments: const [
@@ -459,11 +470,20 @@ class _HomeScreenState extends State<HomeScreen> {
               title: 'Analisis Kepribadian',
               body: summary['personality']!,
               primaryLabel: 'Lihat Kepribadian',
-              onPrimaryTap: () =>
-                  _showSimpleDialog('Kepribadian', summary['personality']!),
-              secondaryLabel: 'Lihat Pemicu',
-              onSecondaryTap: () =>
-                  _showSimpleDialog('Pemicu Utama', summary['trigger']!),
+              onPrimaryTap: () => _openTest('Tes Kepribadian'),
+              secondaryLabel: 'Lihat Riwayat Tes',
+                onSecondaryTap: () {
+                  if (testHistory.isEmpty) {
+                    _showSimpleDialog('Riwayat Tes', 'Belum ada hasil tes');
+                    return;
+                  }
+
+                  final text = testHistory.map((e) {
+                    return '${e.testName} (${e.date.day}/${e.date.month})';
+                  }).join('\n');
+
+                  _showSimpleDialog('Riwayat Tes', text);
+                },
             ),
           ],
         ),
@@ -616,11 +636,88 @@ class _HomeScreenState extends State<HomeScreen> {
               onSecondaryTap: () =>
                   _showSimpleDialog('Saran', stats['suggestion']!),
             ),
-          ],
-        ),
-      ),
-    );
-  }
+            const SizedBox(height: 14),
+              SectionAccentCard(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Hasil Tes Psikologi',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+
+                    if (testHistory.isEmpty)
+                      const Text('Belum ada hasil tes'),
+                    
+                    ...testHistory.map((test) {
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 12),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              test.testName,
+                              style: const TextStyle(fontWeight: FontWeight.w600),
+                            ),
+                            const SizedBox(height: 6),
+                            ...test.dimensionScores.entries.map((e) {
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 4),
+                                child: Row(
+                                  children: [
+                                    SizedBox(
+                                      width: 80,
+                                      child: Text(e.key),
+                                    ),
+                                    Expanded(
+                                      child: LinearProgressIndicator(
+                                        value: e.value / 100, 
+                                      ),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Text('${e.value.toStringAsFixed(1)}%'),
+                                  ],
+                                )
+                              );
+                            }),
+                          ],
+                        ),
+                      );
+                    })
+                  ],
+                ),
+              ),
+              const SizedBox(height: 14),
+
+                if (testHistory.isNotEmpty)
+                  SectionAccentCard(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Rekomendasi Otomatis',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        Text(
+                          _getRecommendation(testHistory.last),
+                          style: const TextStyle(color: Color(0xFF697391)),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
 
   Widget _buildSettingsPage() {
     return SafeArea(
@@ -850,6 +947,26 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  String _getRecommendation(result_model.TestResultModel test) {
+    if (test.dimensionScores.isEmpty) {
+      return 'Belum ada data untuk dianalisis.';
+    }
+
+    final highest = test.dimensionScores.entries
+        .reduce((a, b) => a.value > b.value ? a : b);
+
+    final lowest = test.dimensionScores.entries
+        .reduce((a, b) => a.value < b.value ? a : b);
+
+    if (highest.value >= 70) {
+      return 'Aspek "${highest.key}" cukup tinggi. Coba lakukan relaksasi atau journaling.';
+    } else if (lowest.value < 50) {
+      return 'Aspek "${lowest.key}" masih bisa ditingkatkan. Mulai dari langkah kecil ya.';
+    } else {
+      return 'Kondisi emosimu cukup seimbang. Pertahankan pola hidup sehatmu.';
+    }
+  }
+
   Widget _insightCard({
     required String title,
     required String body,
@@ -966,6 +1083,21 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
     );
+  }
+
+  Future<void> _openTest(String title) async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => const TestCategoryScreen(),
+      ),
+    );
+
+    if (result is result_model.TestResultModel) {
+      setState(() {
+        testHistory.add(result);
+      });
+    }
   }
 }
 

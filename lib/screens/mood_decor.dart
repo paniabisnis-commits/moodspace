@@ -191,6 +191,71 @@ class MoodHeadline extends StatelessWidget {
   }
 }
 
+class MoodHeader extends StatelessWidget {
+  const MoodHeader({
+    super.key,
+    required this.title,
+    required this.icon,
+    required this.accentColor,
+    this.subtitle,
+  });
+
+  final String title;
+  final String? subtitle;
+  final IconData icon;
+  final Color accentColor;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(28),
+        gradient: LinearGradient(
+          colors: [
+            accentColor.withValues(alpha: 0.85),
+            accentColor.withValues(alpha: 0.55),
+          ],
+        ),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 54,
+            height: 54,
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.2),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(icon, color: Colors.white),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                if (subtitle != null)
+                  Text(
+                    subtitle!,
+                    style: const TextStyle(color: Colors.white70),
+                  ),
+              ],
+            ),
+          )
+        ],
+      ),
+    );
+  }
+}
+
 class _Sparkle extends StatelessWidget {
   const _Sparkle({
     required this.size,
