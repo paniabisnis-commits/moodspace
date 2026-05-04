@@ -134,10 +134,7 @@ class _TestQuestionScreenState extends State<TestQuestionScreen> {
 
             const Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text("Tidak setuju"),
-                Text("Sangat setuju"),
-              ],
+              children: [Text("Tidak setuju"), Text("Sangat setuju")],
             ),
 
             const Spacer(),
@@ -146,11 +143,13 @@ class _TestQuestionScreenState extends State<TestQuestionScreen> {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: answers[currentIndex] == null ? null : next,
-                child: Text(currentIndex == _questions.length - 1
-                    ? "Lihat Hasil"
-                    : "Selanjutnya"),
+                child: Text(
+                  currentIndex == _questions.length - 1
+                      ? "Lihat Hasil"
+                      : "Selanjutnya",
+                ),
               ),
-            )
+            ),
           ],
         ),
       ),

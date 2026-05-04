@@ -39,248 +39,249 @@ class _MoodDetailScreenState extends State<MoodDetailScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: appBackground,
-      
+
       body: Stack(
         children: [
-      MoodDecorBackground(
-        accentColor: widget.definition.color,
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(24, 50, 24, 40),
-            child: Column(
-              children: [
-                Expanded(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                      
-  
-                      Center(
-                        child: Container(
-                          width: 110,
-                          height: 110,
-                          decoration: BoxDecoration(
-                            color: widget.definition.color.withValues(
-                              alpha: 0.15,
-                            ),
-                            shape: BoxShape.circle,
-                          ),
-                          child: Icon(
-                            widget.definition.icon,
-                            size: 58,
-                            color: widget.definition.color,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      Center(
-                        child: Text(
-                          'Bagaimana detail perasaanmu?',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            color: widget.definition.color,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 24),
-                      Wrap(
-                        spacing: 12,
-                        runSpacing: 12,
-                        children: widget.definition.feelings.map((item) {
-                          final isSelected = selectedFeeling == item;
-                          return InkWell(
-                            borderRadius: BorderRadius.circular(20),
-                            onTap: () {
-                              setState(() {
-                                selectedFeeling = item;
-                              });
-                            },
-                            child: AnimatedContainer(
-                              duration: const Duration(milliseconds: 220),
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 18,
-                                vertical: 12,
-                              ),
+          MoodDecorBackground(
+            accentColor: widget.definition.color,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(24, 50, 24, 40),
+              child: Column(
+                children: [
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Center(
+                            child: Container(
+                              width: 110,
+                              height: 110,
                               decoration: BoxDecoration(
-                                color: isSelected
-                                    ? widget.definition.color
-                                    : Colors.white,
-                                borderRadius: BorderRadius.circular(20),
-                                border: Border.all(
-                                  color: widget.definition.color.withValues(
-                                    alpha: isSelected ? 0 : 0.18,
-                                  ),
+                                color: widget.definition.color.withValues(
+                                  alpha: 0.15,
                                 ),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: widget.definition.color.withValues(alpha: 0.12),
-                                    blurRadius: 8,
-                                    offset: const Offset(0, 4),
-                                  ),
-                                ],
+                                shape: BoxShape.circle,
                               ),
-                              child: Text(
-                                item,
-                                style: TextStyle(
-                                  color: isSelected
-                                      ? Colors.white
-                                      : widget.definition.color,
-                                  fontWeight: FontWeight.w600,
-                                ),
+                              child: Icon(
+                                widget.definition.icon,
+                                size: 58,
+                                color: widget.definition.color,
                               ),
-                            ),
-                          );
-                        }).toList(),
-                      ),
-                      const SizedBox(height: 22),
-                      Text(
-                        'Energi hari ini',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w700,
-                          color: widget.definition.color,
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      Wrap(
-                        spacing: 10,
-                        runSpacing: 10,
-                        children: energyLevels.map((level) {
-                          final isSelected = selectedEnergy == level;
-                          return _ColorChip(
-                            label: level,
-                            selected: isSelected,
-                            color: widget.definition.color,
-                            icon: energyIcon(level),
-                            onTap: () {
-                              setState(() => selectedEnergy = level);
-                            },
-                          );
-                        }).toList(),
-                      ),
-                      const SizedBox(height: 22),
-                      Text(
-                        'Apa yang kamu lakukan?',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w700,
-                          color: widget.definition.color,
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      Wrap(
-                        spacing: 10,
-                        runSpacing: 10,
-                        children: activityOptions.map((activity) {
-                          final isSelected = selectedActivities.contains(
-                            activity,
-                          );
-                          return _ColorChip(
-                            label: activity,
-                            selected: isSelected,
-                            color: widget.definition.color,
-                            onTap: () {
-                              setState(() {
-                                if (isSelected) {
-                                  selectedActivities.remove(activity);
-                                } else {
-                                  selectedActivities.add(activity);
-                                }
-                              });
-                            },
-                          );
-                        }).toList(),
-                      ),
-                      const SizedBox(height: 22),
-                      Text(
-                        'Catatan hari ini',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w700,
-                          color: widget.definition.color,
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      TextField(
-                        controller: noteController,
-                        maxLines: 4,
-                        decoration: InputDecoration(
-                          hintText: 'Tulis perasaanmu di sini...',
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(20),
-                            borderSide: BorderSide(
-                              color: widget.definition.color,
-                              width: 1.5,
                             ),
                           ),
-                        ),
+                          const SizedBox(height: 20),
+                          Center(
+                            child: Text(
+                              'Bagaimana detail perasaanmu?',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                                color: widget.definition.color,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 24),
+                          Wrap(
+                            spacing: 12,
+                            runSpacing: 12,
+                            children: widget.definition.feelings.map((item) {
+                              final isSelected = selectedFeeling == item;
+                              return InkWell(
+                                borderRadius: BorderRadius.circular(20),
+                                onTap: () {
+                                  setState(() {
+                                    selectedFeeling = item;
+                                  });
+                                },
+                                child: AnimatedContainer(
+                                  duration: const Duration(milliseconds: 220),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 18,
+                                    vertical: 12,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: isSelected
+                                        ? widget.definition.color
+                                        : Colors.white,
+                                    borderRadius: BorderRadius.circular(20),
+                                    border: Border.all(
+                                      color: widget.definition.color.withValues(
+                                        alpha: isSelected ? 0 : 0.18,
+                                      ),
+                                    ),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: widget.definition.color
+                                            .withValues(alpha: 0.12),
+                                        blurRadius: 8,
+                                        offset: const Offset(0, 4),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Text(
+                                    item,
+                                    style: TextStyle(
+                                      color: isSelected
+                                          ? Colors.white
+                                          : widget.definition.color,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }).toList(),
+                          ),
+                          const SizedBox(height: 22),
+                          Text(
+                            'Energi hari ini',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w700,
+                              color: widget.definition.color,
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          Wrap(
+                            spacing: 10,
+                            runSpacing: 10,
+                            children: energyLevels.map((level) {
+                              final isSelected = selectedEnergy == level;
+                              return _ColorChip(
+                                label: level,
+                                selected: isSelected,
+                                color: widget.definition.color,
+                                icon: energyIcon(level),
+                                onTap: () {
+                                  setState(() => selectedEnergy = level);
+                                },
+                              );
+                            }).toList(),
+                          ),
+                          const SizedBox(height: 22),
+                          Text(
+                            'Apa yang kamu lakukan?',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w700,
+                              color: widget.definition.color,
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          Wrap(
+                            spacing: 10,
+                            runSpacing: 10,
+                            children: activityOptions.map((activity) {
+                              final isSelected = selectedActivities.contains(
+                                activity,
+                              );
+                              return _ColorChip(
+                                label: activity,
+                                selected: isSelected,
+                                color: widget.definition.color,
+                                onTap: () {
+                                  setState(() {
+                                    if (isSelected) {
+                                      selectedActivities.remove(activity);
+                                    } else {
+                                      selectedActivities.add(activity);
+                                    }
+                                  });
+                                },
+                              );
+                            }).toList(),
+                          ),
+                          const SizedBox(height: 22),
+                          Text(
+                            'Catatan hari ini',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w700,
+                              color: widget.definition.color,
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          TextField(
+                            controller: noteController,
+                            maxLines: 4,
+                            decoration: InputDecoration(
+                              hintText: 'Tulis perasaanmu di sini...',
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(20),
+                                borderSide: BorderSide(
+                                  color: widget.definition.color,
+                                  width: 1.5,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: 18),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: widget.definition.color,
-                    foregroundColor: Colors.white,
-                    elevation: 6,
-                    shadowColor: widget.definition.color.withValues(alpha: 0.4),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(18),
                     ),
                   ),
-                  onPressed: () {
-                    if (selectedFeeling == null) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Pilih detail perasaan dulu ya.'),
+                  const SizedBox(height: 18),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: widget.definition.color,
+                        foregroundColor: Colors.white,
+                        elevation: 6,
+                        shadowColor: widget.definition.color.withValues(
+                          alpha: 0.4,
                         ),
-                      );
-                      return;
-                    }
-
-                    Navigator.of(context).pop(
-                      MoodModel(
-                        date: DateTime.now(),
-                        mood: widget.definition.label,
-                        feeling: selectedFeeling!,
-                        note: noteController.text.trim(),
-                        energy: selectedEnergy,
-                        activities: selectedActivities.toList(),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(18),
+                        ),
                       ),
-                    );
-                  },
-                  child: const Text('Simpan Mood'),
-                ),
+                      onPressed: () {
+                        if (selectedFeeling == null) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Pilih detail perasaan dulu ya.'),
+                            ),
+                          );
+                          return;
+                        }
+
+                        Navigator.of(context).pop(
+                          MoodModel(
+                            date: DateTime.now(),
+                            mood: widget.definition.label,
+                            feeling: selectedFeeling!,
+                            note: noteController.text.trim(),
+                            energy: selectedEnergy,
+                            activities: selectedActivities.toList(),
+                          ),
+                        );
+                      },
+                      child: const Text('Simpan Mood'),
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
-        ),
-      ),
-       Positioned(
+          Positioned(
             top: 20,
             left: 16,
             child: SafeArea(
               child: Padding(
-              padding: const EdgeInsets.only(top: 8),
-              child: Material(
-                color: Colors.white.withValues(alpha: 0.7),
-                shape: const CircleBorder(),
-                child: IconButton(
-                  padding: const EdgeInsets.all(12),
-                  iconSize: 26,
-                  onPressed: () => Navigator.of(context).pop(),
-                  icon: const Icon(Icons.arrow_back_ios_new_rounded),
-                  color: widget.definition.color,
-                    ),
+                padding: const EdgeInsets.only(top: 8),
+                child: Material(
+                  color: Colors.white.withValues(alpha: 0.7),
+                  shape: const CircleBorder(),
+                  child: IconButton(
+                    padding: const EdgeInsets.all(12),
+                    iconSize: 26,
+                    onPressed: () => Navigator.of(context).pop(),
+                    icon: const Icon(Icons.arrow_back_ios_new_rounded),
+                    color: widget.definition.color,
                   ),
                 ),
               ),
+            ),
           ),
         ],
       ),

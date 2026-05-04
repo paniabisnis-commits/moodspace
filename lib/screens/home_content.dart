@@ -152,18 +152,24 @@ class HomeContent extends StatelessWidget {
                             scrollDirection: Axis.horizontal,
                             child: ConstrainedBox(
                               constraints: BoxConstraints(
-                                minWidth: MediaQuery.of(context).size.width - 44, // biar full feel
+                                minWidth:
+                                    MediaQuery.of(context).size.width -
+                                    44, // biar full feel
                               ),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: moodDefinitions.map((mood) {
-                                  final selected = moodDefinition?.label == mood.label;
+                                  final selected =
+                                      moodDefinition?.label == mood.label;
 
                                   return InkWell(
                                     borderRadius: BorderRadius.circular(20),
                                     onTap: () => onMoodTap(mood),
                                     child: AnimatedContainer(
-                                      duration: const Duration(milliseconds: 220),
+                                      duration: const Duration(
+                                        milliseconds: 220,
+                                      ),
                                       padding: const EdgeInsets.symmetric(
                                         horizontal: 12, // diperbesar
                                         vertical: 10,
@@ -180,15 +186,18 @@ class HomeContent extends StatelessWidget {
                                           Icon(
                                             mood.icon,
                                             color: mood.color,
-                                            size: selected ? 30 : 26, // lebih gede
+                                            size: selected
+                                                ? 30
+                                                : 26, // lebih gede
                                           ),
                                           const SizedBox(height: 6),
                                           Text(
                                             mood.label,
                                             style: TextStyle(
                                               fontSize: 12, // konsisten
-                                              fontWeight:
-                                                  selected ? FontWeight.w700 : FontWeight.w500,
+                                              fontWeight: selected
+                                                  ? FontWeight.w700
+                                                  : FontWeight.w500,
                                               color: const Color(0xFF46506F),
                                             ),
                                           ),
@@ -486,7 +495,7 @@ class _ActionCard extends StatelessWidget {
                       const SizedBox(width: 4),
                       const Icon(Icons.arrow_forward_rounded, size: 18),
                     ],
-                  )
+                  ),
                 ],
               ),
             ),

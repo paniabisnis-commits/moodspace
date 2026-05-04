@@ -180,106 +180,108 @@ class _AnimatedPage extends StatelessWidget {
             padding: const EdgeInsets.all(30),
             child: SingleChildScrollView(
               child: ConstrainedBox(
-              constraints: BoxConstraints(
-                minHeight: MediaQuery.of(context).size.height * 0.7,
-              ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                TweenAnimationBuilder<double>(
-                  tween: Tween<double>(begin: 0.9, end: 1.05),
-                  duration: const Duration(seconds: 2),
-                  curve: Curves.easeInOut,
-                  builder: (context, scale, child) {
-                    return Transform.scale(
-                      scale: isActive ? scale : 0.9,
-                      child: child,
-                    );
-                  },
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      Container(
-                        width: 220,
-                        height: 220,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: const Color(
-                            0xFF5C6BC0,
-                          ).withValues(alpha: 0.08),
-                        ),
-                      ),
-                      Container(
-                        width: 140,
-                        height: 140,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          boxShadow: [
-                            BoxShadow(
+                constraints: BoxConstraints(
+                  minHeight: MediaQuery.of(context).size.height * 0.7,
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    TweenAnimationBuilder<double>(
+                      tween: Tween<double>(begin: 0.9, end: 1.05),
+                      duration: const Duration(seconds: 2),
+                      curve: Curves.easeInOut,
+                      builder: (context, scale, child) {
+                        return Transform.scale(
+                          scale: isActive ? scale : 0.9,
+                          child: child,
+                        );
+                      },
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          Container(
+                            width: 220,
+                            height: 220,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
                               color: const Color(
                                 0xFF5C6BC0,
-                              ).withValues(alpha: 0.25),
-                              blurRadius: 40,
-                              spreadRadius: 8,
+                              ).withValues(alpha: 0.08),
                             ),
-                          ],
-                        ),
-                      ),
-                      Positioned(
-                        top: 24,
-                        left: 18,
-                        child: Icon(
-                          Icons.auto_awesome_rounded,
-                          color: const Color(0xFF98A4E8).withValues(alpha: 0.6),
-                          size: 22,
-                        ),
-                      ),
-                      Positioned(
-                        bottom: 28,
-                        right: 26,
-                        child: Transform.rotate(
-                          angle: 0.2,
-                          child: Container(
-                            width: 34,
-                            height: 34,
+                          ),
+                          Container(
+                            width: 140,
+                            height: 140,
                             decoration: BoxDecoration(
-                              border: Border.all(
-                                color: const Color(
-                                  0xFF7986CB,
-                                ).withValues(alpha: 0.45),
-                              ),
-                              borderRadius: BorderRadius.circular(12),
+                              shape: BoxShape.circle,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: const Color(
+                                    0xFF5C6BC0,
+                                  ).withValues(alpha: 0.25),
+                                  blurRadius: 40,
+                                  spreadRadius: 8,
+                                ),
+                              ],
                             ),
                           ),
-                        ),
-                      ),
-                      Icon(icon, size: 70, color: const Color(0xFF5C6BC0)),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 50),
-                AnimatedOpacity(
-                  duration: const Duration(milliseconds: 500),
-                  opacity: isActive ? 1 : 0.3,
-                  child: Transform.translate(
-                    offset: Offset(0, isActive ? 0 : 20),
-                    child: Column(
-                      children: [
-                        Text(
-                          title,
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            fontSize: 26,
-                            fontWeight: FontWeight.bold,
+                          Positioned(
+                            top: 24,
+                            left: 18,
+                            child: Icon(
+                              Icons.auto_awesome_rounded,
+                              color: const Color(
+                                0xFF98A4E8,
+                              ).withValues(alpha: 0.6),
+                              size: 22,
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 15),
-                        Text(
-                          desc,
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            color: Colors.grey,
+                          Positioned(
+                            bottom: 28,
+                            right: 26,
+                            child: Transform.rotate(
+                              angle: 0.2,
+                              child: Container(
+                                width: 34,
+                                height: 34,
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: const Color(
+                                      0xFF7986CB,
+                                    ).withValues(alpha: 0.45),
+                                  ),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Icon(icon, size: 70, color: const Color(0xFF5C6BC0)),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 50),
+                    AnimatedOpacity(
+                      duration: const Duration(milliseconds: 500),
+                      opacity: isActive ? 1 : 0.3,
+                      child: Transform.translate(
+                        offset: Offset(0, isActive ? 0 : 20),
+                        child: Column(
+                          children: [
+                            Text(
+                              title,
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                fontSize: 26,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 15),
+                            Text(
+                              desc,
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                color: Colors.grey,
                               ),
                             ),
                           ],

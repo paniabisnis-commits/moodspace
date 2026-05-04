@@ -6,7 +6,6 @@ class TestResultModel {
   final String interpretation;
   final List<String> recommendations;
   final DateTime date;
-  
 
   final Map<String, double> dimensionScores;
 
@@ -34,8 +33,7 @@ class TestScoring {
       if (answers.isEmpty) {
         dimensionScores[dimension] = 0;
       } else {
-        final avg =
-            answers.reduce((a, b) => a + b) / answers.length.toDouble();
+        final avg = answers.reduce((a, b) => a + b) / answers.length.toDouble();
 
         dimensionScores[dimension] = (avg / 5) * 100;
       }
@@ -44,15 +42,14 @@ class TestScoring {
     final totalScore = dimensionScores.values.isEmpty
         ? 0.0
         : (dimensionScores.values.reduce((a, b) => a + b) /
-        dimensionScores.length).toDouble();
+                  dimensionScores.length)
+              .toDouble();
 
     final level = _getLevel(totalScore);
 
-    final interpretation =
-        _generateInterpretation(totalScore, dimensionScores);
+    final interpretation = _generateInterpretation(totalScore, dimensionScores);
 
-    final recommendations =
-        _generateRecommendations(dimensionScores);
+    final recommendations = _generateRecommendations(dimensionScores);
 
     return TestResultModel(
       testId: testId,
@@ -78,12 +75,9 @@ class TestScoring {
     double total,
     Map<String, double> dims,
   ) {
-
     if (dims.isEmpty) return 'Tidak ada data';
-    final highest =
-        dims.entries.reduce((a, b) => a.value > b.value ? a : b);
-    final lowest =
-        dims.entries.reduce((a, b) => a.value < b.value ? a : b);
+    final highest = dims.entries.reduce((a, b) => a.value > b.value ? a : b);
+    final lowest = dims.entries.reduce((a, b) => a.value < b.value ? a : b);
 
     return '''
 Skor keseluruhan kamu berada di kategori "${_getLevel(total)}".
@@ -96,22 +90,21 @@ Perhatikan keseimbangan dengan aspek "${lowest.key}" agar kondisi mental tetap s
 ''';
   }
 
-  static List<String> _generateRecommendations(
-      Map<String, double> dims) {
+  static List<String> _generateRecommendations(Map<String, double> dims) {
     final List<String> recs = [];
 
     dims.forEach((key, value) {
       if (value >= 75) {
         recs.add(
-          'Tingkat "$key" cukup tinggi. Disarankan melakukan relaksasi, journaling, atau konsultasi ringan.'
+          'Tingkat "$key" cukup tinggi. Disarankan melakukan relaksasi, journaling, atau konsultasi ringan.',
         );
       } else if (value >= 50) {
         recs.add(
-          'Aspek "$key" berada di level sedang. Pertahankan dengan pola hidup seimbang.'
+          'Aspek "$key" berada di level sedang. Pertahankan dengan pola hidup seimbang.',
         );
       } else {
         recs.add(
-          'Aspek "$key" relatif rendah. Ini bisa menjadi area yang stabil dalam kondisi psikologismu.'
+          'Aspek "$key" relatif rendah. Ini bisa menjadi area yang stabil dalam kondisi psikologismu.',
         );
       }
     });

@@ -5,11 +5,7 @@ class TestResult {
   final Map<String, double> scores;
   final String summary;
 
-  TestResult({
-    required this.date,
-    required this.scores,
-    required this.summary,
-  });
+  TestResult({required this.date, required this.scores, required this.summary});
 }
 
 class TestHistory {
@@ -66,7 +62,9 @@ class ResultScreen extends StatelessWidget {
             const SizedBox(height: 20),
 
             Text("Skor:", style: TextStyle(fontWeight: FontWeight.bold)),
-            ...scores.entries.map((e) => Text("${e.key}: ${e.value.toStringAsFixed(1)}")),
+            ...scores.entries.map(
+              (e) => Text("${e.key}: ${e.value.toStringAsFixed(1)}"),
+            ),
 
             const SizedBox(height: 20),
 
@@ -88,7 +86,7 @@ class ResultScreen extends StatelessWidget {
                 Navigator.pop(context, result);
               },
               child: Text("Simpan Hasil"),
-            )
+            ),
           ],
         ),
       ),
@@ -119,7 +117,7 @@ class DimensionChart extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 4),
-              Text(e.key, style: TextStyle(fontSize: 10))
+              Text(e.key, style: TextStyle(fontSize: 10)),
             ],
           ),
         );
@@ -149,11 +147,17 @@ class HistoryScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(item.summary, style: TextStyle(fontWeight: FontWeight.bold)),
+                  Text(
+                    item.summary,
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
                   SizedBox(height: 8),
                   Text(item.date.toString()),
                   SizedBox(height: 12),
-                  SizedBox(height: 120, child: DimensionChart(scores: item.scores))
+                  SizedBox(
+                    height: 120,
+                    child: DimensionChart(scores: item.scores),
+                  ),
                 ],
               ),
             ),
