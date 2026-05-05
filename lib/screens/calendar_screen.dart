@@ -308,25 +308,29 @@ class _CalendarScreenState extends State<CalendarScreen> {
                                         height: 52,
                                         child: OutlinedButton.icon(
                                           onPressed: () {
-                                            showDialog<void>(
+
+                                            showGeneralDialog(
                                               context: context,
-                                              builder: (context) => AlertDialog(
-                                                title: Text(
-                                                  'Detail ${selectedMood.mood}',
-                                                ),
-                                                content: Text(
-                                                  'Perasaan: ${selectedMood.feeling}\n\nCatatan:\n${selectedMood.note.isEmpty ? '-' : selectedMood.note}\n\nEnergi: ${selectedMood.energy}',
-                                                ),
-                                                actions: [
-                                                  TextButton(
-                                                    onPressed: () =>
-                                                        Navigator.of(
-                                                          context,
-                                                        ).pop(),
-                                                    child: const Text('Tutup'),
-                                                  ),
-                                                ],
-                                              ),
+                                              barrierDismissible: true,
+                                              barrierLabel: "",
+                                              barrierColor: Colors.black.withValues(alpha: 0.4),
+                                              transitionDuration: const Duration(milliseconds: 300),
+                                              pageBuilder: (context, animation, secondaryAnimation) {
+                                                return Center(
+                                                  child: MoodDetailDialog(mood: selectedMood),
+                                                );
+                                              },
+                                              transitionBuilder: (context, animation, secondaryAnimation, child) {
+                                                final scale = CurvedAnimation(
+                                                  parent: animation,
+                                                  curve: Curves.easeOutBack,
+                                                );
+
+                                                return ScaleTransition(
+                                                  scale: scale,
+                                                  child: child,
+                                                );
+                                              },
                                             );
                                           },
                                           icon: const Icon(
@@ -419,6 +423,87 @@ class _DayLabel extends StatelessWidget {
             fontWeight: FontWeight.w700,
             color: Color(0xFF7A84A6),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class MoodDetailDialog extends StatelessWidget {
+  final MoodModel mood;
+
+  const MoodDetailDialog({super.key, required this.mood});
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      backgroundColor: Colors.transparent,
+      child: Container(
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(28),
+          gradient: LinearGradient(
+            colors: [
+              mood.definition.color.withValues(alpha: 0.9),
+              mood.definition.color.withValues(alpha: 0.6),
+            ],
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: mood.definition.color.withValues(alpha: 0.4),
+              blurRadius: 20,
+              offset: const Offset(0, 10),
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              mood.definition.icon,
+              size: 48,
+              color: Colors.white,
+            ),
+            const SizedBox(height: 10),
+            Text(
+              mood.mood,
+              style: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              "Energi: ${mood.energy}",
+              style: const TextStyle(color: Colors.white70),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              mood.note.isEmpty ? "Tidak ada catatan" : mood.note,
+              textAlign: TextAlign.center,
+              style: const TextStyle(color: Colors.white),
+            ),
+            const SizedBox(height: 16),
+            Wrap(
+              spacing: 6,
+              children: mood.activities.map((e) {
+                return Chip(
+                  label: Text(e),
+                  backgroundColor: Colors.white.withValues(alpha: 0.2),
+                  labelStyle: const TextStyle(color: Colors.white),
+                );
+              }).toList(),
+            ),
+            const SizedBox(height: 16),
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text(
+                "Tutup",
+                style: TextStyle(color: Colors.white),
+              ),
+            )
+          ],
         ),
       ),
     );
