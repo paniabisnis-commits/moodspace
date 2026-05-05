@@ -119,7 +119,7 @@ class CommitmentScreen extends StatelessWidget {
                 SizedBox(
                   width: double.infinity,
                   height: 65,
-                  child: ElevatedButton.icon(
+                  child: ElevatedButton(
                     onPressed: () {
                       Navigator.pushReplacement(
                         context,
@@ -128,8 +128,7 @@ class CommitmentScreen extends StatelessWidget {
                         ),
                       );
                     },
-                    icon: const Icon(Icons.favorite_rounded),
-                    label: const Text('Lanjutkan'),
+                    child: const Text('Lanjutkan'),
                   ),
                 ),
                 const SizedBox(height: 30),

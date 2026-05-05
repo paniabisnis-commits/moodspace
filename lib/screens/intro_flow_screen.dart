@@ -117,14 +117,9 @@ class _IntroFlowScreenState extends State<IntroFlowScreen> {
                 child: SizedBox(
                   width: double.infinity,
                   height: 55,
-                  child: ElevatedButton.icon(
+                  child: ElevatedButton(
                     onPressed: nextPage,
-                    icon: Icon(
-                      currentPage == pages.length - 1
-                          ? Icons.favorite_rounded
-                          : Icons.arrow_forward_rounded,
-                    ),
-                    label: Text(
+                    child: Text(
                       currentPage == pages.length - 1
                           ? 'Mulai Perjalanan'
                           : 'Selanjutnya',

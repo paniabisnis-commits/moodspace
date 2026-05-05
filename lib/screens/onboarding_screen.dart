@@ -14,6 +14,8 @@ class OnboardingScreen extends StatefulWidget {
 class _OnboardingScreenState extends State<OnboardingScreen> {
   final List<int> selectedIndexes = [];
 
+  bool get isButtonEnabled => selectedIndexes.isNotEmpty;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,6 +27,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             child: Column(
               children: [
                 const SizedBox(height: 50),
+
                 const Text(
                   'Apa yang ingin kamu capai?',
                   textAlign: TextAlign.center,
@@ -34,12 +37,16 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     color: Color(0xFF3F51B5),
                   ),
                 ),
+
                 const SizedBox(height: 10),
+
                 const Text(
                   'Pilih satu atau lebih sesuai kebutuhanmu',
                   style: TextStyle(fontSize: 17, color: Colors.grey),
                 ),
+
                 const SizedBox(height: 25),
+
                 Expanded(
                   child: ListView.builder(
                     itemCount: onboardingGoals.length,
@@ -131,27 +138,38 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 SizedBox(
                   width: double.infinity,
                   height: 62,
-                  child: ElevatedButton.icon(
-                    onPressed: () {
-                      if (selectedIndexes.isEmpty) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Pilih minimal satu tujuan dulu ya.'),
-                          ),
-                        );
-                        return;
-                      }
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const NameInputScreen(),
-                        ),
-                      );
-                    },
-                    icon: const Icon(Icons.arrow_forward_rounded),
-                    label: const Text('Lanjutkan'),
+                  child: ElevatedButton(
+                    onPressed: isButtonEnabled
+                        ? () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const NameInputScreen(),
+                              ),
+                            );
+                          }
+                        : null,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor:
+                          isButtonEnabled ? appPrimary : Colors.grey.shade300,
+                      foregroundColor:
+                          isButtonEnabled ? Colors.white : Colors.grey.shade600,
+                      elevation: isButtonEnabled ? 3 : 0,
+                      shadowColor: appPrimary.withValues(alpha: 0.25),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(26), // 🔥 lebih rounded
+                      ),
+                    ),
+                    child: const Text(
+                      'Lanjutkan',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                   ),
                 ),
+
                 const SizedBox(height: 20),
               ],
             ),
