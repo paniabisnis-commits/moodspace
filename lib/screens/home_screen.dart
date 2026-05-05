@@ -379,7 +379,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: CustomScrollView(
           slivers: [
             SliverPersistentHeader(
-              pinned: true,
+              pinned: false,
               delegate: SliverPinnedHeader(
                 height: 142,
                 child: Padding(
@@ -395,7 +395,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             SliverToBoxAdapter(
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(20, 10, 20, 24),
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
                 child: Column(
                   children: [
                     SegmentedButton<String>(
@@ -496,7 +496,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     _insightCard(
                       title: 'Analisis Kepribadian',
                       body: summary['personality']!,
-                      primaryLabel: 'Tes Kepribadian',
+                      primaryLabel: 'Lihat Kepribadian',
                       onPrimaryTap: _openTestCategory,
                       secondaryLabel: 'Riwayat Tes',
                       onSecondaryTap: _showTestHistory,
@@ -540,7 +540,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             SliverToBoxAdapter(
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(20, 10, 20, 24),
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
                 child: Column(
                   children: [
                     SegmentedButton<String>(
@@ -673,9 +673,15 @@ class _HomeScreenState extends State<HomeScreen> {
                       title: 'Dampak Aktivitas',
                       body: stats['activities']!,
                       primaryLabel: 'Lihat Aktivitas',
-                      onPrimaryTap: _openActivityInsight,
+                      onPrimaryTap: () => _showSimpleDialog(
+                        'Aktivitas yang Paling Berpengaruh',
+                        _activityInsightText(),
+                      ),
                       secondaryLabel: 'Ringkasan Energi',
-                      onSecondaryTap: _openEnergyInsight,
+                      onSecondaryTap: () => _showSimpleDialog(
+                        'Ringkasan Energi',
+                        stats['energy']!,
+                      ),
                     ),
                     const SizedBox(height: 14),
                     _insightCard(
@@ -750,7 +756,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             SliverToBoxAdapter(
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(20, 10, 20, 24),
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
                 child: Column(
                   children: [
                     InkWell(
@@ -1114,11 +1120,74 @@ class _HomeScreenState extends State<HomeScreen> {
       _showSimpleDialog('Riwayat Tes', 'Belum ada hasil tes.');
       return;
     }
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) =>
-            TestHistoryScreen(history: List.of(testHistory.reversed)),
-      ),
+    showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      builder: (context) {
+        return Padding(
+          padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Riwayat Tes',
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: appInk,
+                ),
+              ),
+              const SizedBox(height: 14),
+              ...testHistory.reversed.map((test) {
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: SectionAccentCard(
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 44,
+                          height: 44,
+                          decoration: BoxDecoration(
+                            color: appPrimary.withValues(alpha: 0.12),
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(
+                            Icons.psychology_alt_rounded,
+                            color: appPrimary,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                test.testName,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w700,
+                                  color: appInk,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                'Hasil akhir: ${test.level} • Skor ${test.totalScore.toStringAsFixed(1)}',
+                                style: const TextStyle(
+                                  color: Color(0xFF6D7695),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }),
+            ],
+          ),
+        );
+      },
     );
   }
 
@@ -1146,45 +1215,6 @@ class _HomeScreenState extends State<HomeScreen> {
         ? 'Aktivitas yang paling sering muncul bersama catatan mood kamu adalah ${primary.key.toLowerCase()} sebanyak ${primary.value} kali. Aktivitas ini tampaknya cukup berpengaruh pada ritme emosimu.'
         : 'Dua aktivitas yang paling sering muncul adalah ${primary.key.toLowerCase()} (${primary.value} kali) dan ${secondary.key.toLowerCase()} (${secondary.value} kali). Coba perhatikan bagaimana keduanya memengaruhi energi dan suasana hatimu.';
   }
-
-  void _openActivityInsight() {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => InsightDetailScreen(
-          title: 'Aktivitas yang Berpengaruh',
-          subtitle: 'Lihat aktivitas yang paling sering muncul bersama mood-mu',
-          icon: Icons.directions_run_rounded,
-          body: _activityInsightText(),
-          bullets: moodHistory
-              .expand((mood) => mood.activities)
-              .toSet()
-              .take(4)
-              .map((e) => 'Aktivitas tercatat: $e')
-              .toList(),
-        ),
-      ),
-    );
-  }
-
-  void _openEnergyInsight() {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => InsightDetailScreen(
-          title: 'Ringkasan Energi',
-          subtitle: 'Hubungan energi dan kebiasaan harianmu',
-          icon: Icons.bolt_rounded,
-          body: _statisticsSummary(_statisticsRange, '').containsKey('energy')
-              ? _statisticsSummary(_statisticsRange, '')['energy']!
-              : 'Energi harianmu akan dianalisis setelah lebih banyak catatan mood tersimpan.',
-          bullets: const [
-            'Energi tinggi biasanya muncul setelah ritme tidur lebih terjaga.',
-            'Energi sedang cocok untuk menjaga tugas tetap stabil tanpa memaksa diri.',
-            'Energi rendah adalah sinyal untuk memperlambat ritme dan memberi jeda.',
-          ],
-        ),
-      ),
-    );
-  }
 }
 
 class _NavItem {
@@ -1201,215 +1231,3 @@ const List<_NavItem> _tabs = [
   _NavItem('Statistik', Icons.bar_chart_rounded),
   _NavItem('Pengaturan', Icons.settings_rounded),
 ];
-
-class InsightDetailScreen extends StatelessWidget {
-  const InsightDetailScreen({
-    super.key,
-    required this.title,
-    required this.subtitle,
-    required this.icon,
-    required this.body,
-    required this.bullets,
-  });
-
-  final String title;
-  final String subtitle;
-  final IconData icon;
-  final String body;
-  final List<String> bullets;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: appBackground,
-      body: MoodDecorBackground(
-        accentColor: appPrimary,
-        child: SafeArea(
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20, 18, 20, 12),
-                child: Row(
-                  children: [
-                    ScreenBackButton(
-                      onTap: () => Navigator.of(context).pop(),
-                      color: appPrimary,
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: MoodHeader(
-                        title: title,
-                        subtitle: subtitle,
-                        icon: icon,
-                        accentColor: appPrimary,
-                        compact: true,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Expanded(
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.fromLTRB(20, 14, 20, 24),
-                  child: Column(
-                    children: [
-                      SectionAccentCard(
-                        child: Text(
-                          body,
-                          style: const TextStyle(
-                            color: Color(0xFF697391),
-                            height: 1.6,
-                          ),
-                        ),
-                      ),
-                      if (bullets.isNotEmpty) ...[
-                        const SizedBox(height: 14),
-                        SectionAccentCard(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: bullets.map((item) {
-                              return Padding(
-                                padding: const EdgeInsets.only(bottom: 10),
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Container(
-                                      width: 9,
-                                      height: 9,
-                                      margin: const EdgeInsets.only(top: 6),
-                                      decoration: const BoxDecoration(
-                                        color: appPrimary,
-                                        shape: BoxShape.circle,
-                                      ),
-                                    ),
-                                    const SizedBox(width: 10),
-                                    Expanded(
-                                      child: Text(
-                                        item,
-                                        style: const TextStyle(
-                                          color: Color(0xFF697391),
-                                          height: 1.5,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            }).toList(),
-                          ),
-                        ),
-                      ],
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class TestHistoryScreen extends StatelessWidget {
-  const TestHistoryScreen({super.key, required this.history});
-
-  final List<result_model.TestResultModel> history;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: appBackground,
-      body: MoodDecorBackground(
-        accentColor: appPrimary,
-        child: SafeArea(
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20, 18, 20, 12),
-                child: Row(
-                  children: [
-                    ScreenBackButton(
-                      onTap: () => Navigator.of(context).pop(),
-                      color: appPrimary,
-                    ),
-                    const SizedBox(width: 12),
-                    const Expanded(
-                      child: MoodHeader(
-                        title: 'Riwayat Tes',
-                        subtitle:
-                            'Kategori tes yang pernah dicoba dan hasil akhirnya',
-                        icon: Icons.history_rounded,
-                        accentColor: appPrimary,
-                        compact: true,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Expanded(
-                child: ListView.separated(
-                  padding: const EdgeInsets.fromLTRB(20, 14, 20, 24),
-                  itemBuilder: (context, index) {
-                    final test = history[index];
-                    return SectionAccentCard(
-                      child: Row(
-                        children: [
-                          Container(
-                            width: 46,
-                            height: 46,
-                            decoration: BoxDecoration(
-                              color: appPrimary.withValues(alpha: 0.12),
-                              shape: BoxShape.circle,
-                            ),
-                            child: const Icon(
-                              Icons.psychology_alt_rounded,
-                              color: appPrimary,
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  test.testName,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.w700,
-                                    color: appInk,
-                                  ),
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  'Hasil akhir: ${test.level}',
-                                  style: const TextStyle(
-                                    color: Color(0xFF6D7695),
-                                  ),
-                                ),
-                                const SizedBox(height: 2),
-                                Text(
-                                  'Skor ${test.totalScore.toStringAsFixed(1)} • ${test.date.day}/${test.date.month}/${test.date.year}',
-                                  style: const TextStyle(
-                                    color: Color(0xFF8A93B0),
-                                    fontSize: 12,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                  separatorBuilder: (context, index) =>
-                      const SizedBox(height: 12),
-                  itemCount: history.length,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}

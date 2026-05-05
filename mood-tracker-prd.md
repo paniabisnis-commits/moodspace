@@ -525,80 +525,39 @@ Tambahan:
 - Statistics: `insufficientData`
 - Analysis: `insufficientData`
 
-## 8. Ready-to-Implement Design Tokens
+## 8. Product Foundations & Requirements
 
-```json
-{
-  "color": {
-    "bg": {
-      "base": "#FFFDF8",
-      "surface": "#FFFFFF",
-      "soft": "#F7F4EF"
-    },
-    "text": {
-      "primary": "#2F2A24",
-      "secondary": "#6F675F"
-    },
-    "border": {
-      "soft": "#E8E1D8"
-    },
-    "accent": {
-      "peach": "#F6C7B6",
-      "sage": "#BFD8C1",
-      "sky": "#C9DDF2",
-      "lavender": "#D9CFF2",
-      "butter": "#F6E3A1"
-    },
-    "mood": {
-      "veryBad": "#E8A4A4",
-      "bad": "#F2C2A8",
-      "neutral": "#F3DE9B",
-      "good": "#BFE0B7",
-      "veryGood": "#9ED4C8"
-    },
-    "semantic": {
-      "success": "#A9D8B8",
-      "warning": "#F3D8A6",
-      "dangerSoft": "#E7B6B6",
-      "infoSoft": "#C9DDF2"
-    }
-  },
-  "spacing": {
-    "4": 4,
-    "8": 8,
-    "12": 12,
-    "16": 16,
-    "24": 24,
-    "32": 32,
-    "40": 40,
-    "48": 48
-  },
-  "radius": {
-    "sm": 8,
-    "md": 12,
-    "lg": 16,
-    "xl": 24,
-    "pill": 999
-  },
-  "typography": {
-    "fontHeading": "DM Sans",
-    "fontBody": "Inter",
-    "displayLg": { "fontSize": 32, "lineHeight": 40, "fontWeight": 700 },
-    "headingXl": { "fontSize": 24, "lineHeight": 32, "fontWeight": 700 },
-    "headingLg": { "fontSize": 20, "lineHeight": 28, "fontWeight": 600 },
-    "headingMd": { "fontSize": 18, "lineHeight": 24, "fontWeight": 600 },
-    "bodyLg": { "fontSize": 16, "lineHeight": 24, "fontWeight": 400 },
-    "bodyMd": { "fontSize": 14, "lineHeight": 20, "fontWeight": 400 },
-    "bodySm": { "fontSize": 12, "lineHeight": 16, "fontWeight": 400 },
-    "labelMd": { "fontSize": 14, "lineHeight": 18, "fontWeight": 500 }
-  },
-  "motion": {
-    "fast": 180,
-    "base": 220,
-    "slow": 280
-  }
-}
-```
+## 8.1 Product Goals
+- Meningkatkan frekuensi mood check-in harian
+- Membantu user mengenali pola emosi
+- Menyediakan insight yang actionable tanpa overwhelm
+
+## 8.2 Target Users
+- Mahasiswa (18–24) dengan stress akademik
+- Young professionals dengan burnout ringan
+- User yang ingin journaling sederhana tanpa kompleksitas
+
+## 8.3 Success Metrics
+- Daily Active Users (DAU)
+- Mood check-in rate per user per week
+- Retention 7 hari
+- Completion rate log mood
+
+## 8.4 Functional Requirements
+- User dapat menyimpan 1+ mood per hari
+- Data mood disimpan secara lokal/cloud
+- Calendar menampilkan mood berdasarkan tanggal
+- Statistics dihitung dari mood history
+
+## 8.5 Edge Cases
+- Tidak ada data → tampilkan empty state
+- User belum log mood → CTA berubah
+- Data kosong di statistik → tampilkan placeholder insight
+
+## 8.6 Constraints
+- Platform: Flutter (mobile-first)
+- Offline-first capability (optional)
+- Tidak menggunakan chart library berat
 
 ## 9. Final Recommendation
 Pertahankan fokus aplikasi ini pada satu tindakan inti: membantu user mengenali dan mencatat emosinya dengan cepat dan aman. Navigation yang sudah ada sudah cukup jelas; nilai tambah utama harus datang dari kejelasan visual, copy yang suportif, dan insight yang sederhana namun terasa personal.
