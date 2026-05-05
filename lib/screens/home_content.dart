@@ -384,7 +384,6 @@ class _InfoCard extends StatelessWidget {
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Row(
               children: [
@@ -396,12 +395,20 @@ class _InfoCard extends StatelessWidget {
                 ),
               ],
             ),
+
+            const Spacer(), 
+
             Text(
               title,
               style: const TextStyle(fontSize: 14, color: Color(0xFF5A6485)),
             ),
+
+            const SizedBox(height: 4),
+
             Text(
               value,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis, 
               style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
@@ -409,7 +416,7 @@ class _InfoCard extends StatelessWidget {
               ),
             ),
           ],
-        ),
+        )
       ),
     );
   }

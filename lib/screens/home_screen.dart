@@ -379,7 +379,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: CustomScrollView(
           slivers: [
             SliverPersistentHeader(
-              pinned: false,
+              pinned: true,
               delegate: SliverPinnedHeader(
                 height: 142,
                 child: Padding(
