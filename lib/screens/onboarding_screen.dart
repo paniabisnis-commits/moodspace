@@ -157,7 +157,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       elevation: isButtonEnabled ? 3 : 0,
                       shadowColor: appPrimary.withValues(alpha: 0.25),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(26), // 🔥 lebih rounded
+                        borderRadius: BorderRadius.circular(26), 
                       ),
                     ),
                     child: const Text(

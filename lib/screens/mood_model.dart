@@ -135,13 +135,12 @@ const List<Map<String, dynamic>> onboardingGoals = [
 
 const List<String> activityOptions = [
   'Kerja',
+  'Sekolah',
   'Olahraga',
   'Tidur',
-  'Keluarga',
-  'Teman',
-  'Belajar',
+  'Makan',
   'Healing',
-  'Hobi',
+  'Bersosialisasi',
 ];
 
 const List<String> homeInfluenceTags = [

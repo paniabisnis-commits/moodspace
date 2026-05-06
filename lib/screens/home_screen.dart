@@ -28,6 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final List<MoodModel> moodHistory = [];
   final List<result_model.TestResultModel> testHistory = [];
   final Set<String> selectedInfluences = {};
+  final List<String> customInfluenceTags = [];
   String _analysisRange = 'Bulanan';
   String _statisticsRange = 'Mingguan';
 
@@ -45,6 +46,14 @@ class _HomeScreenState extends State<HomeScreen> {
         currentMood: currentMood,
         energyLevel: energyLevel,
         selectedInfluences: selectedInfluences,
+        customInfluenceTags: customInfluenceTags,
+          onAddCustomInfluence: (tag) {
+            setState(() {
+              if (!customInfluenceTags.contains(tag)) {
+                customInfluenceTags.add(tag);
+              }
+            });
+          },
         onProfileTap: _openProfileSheet,
         onMoodTap: _openMoodDetail,
         onInfluenceTap: _toggleInfluence,
@@ -171,8 +180,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _toggleInfluence(String tag) {
     setState(() {
-      if (!selectedInfluences.add(tag)) {
+      if (selectedInfluences.contains(tag)) {
         selectedInfluences.remove(tag);
+      } else {
+        selectedInfluences.add(tag);
       }
     });
   }
@@ -1248,13 +1259,11 @@ class _StreakDialogState extends State<_StreakDialog> {
       child: Stack(
         alignment: Alignment.center,
         children: [
-          // 🔥 Background blur + overlay gelap
           BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
             child: Container(color: Colors.black.withValues(alpha: 0.3)),
           ),
 
-          // 💎 Glassmorphism Dialog
           Center(
             child: Dialog(
               backgroundColor: Colors.transparent,
@@ -1263,7 +1272,6 @@ class _StreakDialogState extends State<_StreakDialog> {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(28),
 
-                  // 🔥 WARNA DINAMIS (INI YANG KAMU MAU)
                   gradient: LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
@@ -1285,7 +1293,7 @@ class _StreakDialogState extends State<_StreakDialog> {
                   boxShadow: [
                     BoxShadow(
                       color: widget.hasMood
-                          ? appPrimary.withValues(alpha: 0.35) // glow ungu
+                          ? appPrimary.withValues(alpha: 0.35) 
                           : Colors.black.withValues(alpha: 0.1),
                       blurRadius: 25,
                       offset: const Offset(0, 10),
@@ -1296,7 +1304,6 @@ class _StreakDialogState extends State<_StreakDialog> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    // 🔥 ICON
                     Container(
                       padding: const EdgeInsets.all(14),
                       decoration: BoxDecoration(
@@ -1314,7 +1321,6 @@ class _StreakDialogState extends State<_StreakDialog> {
 
                     const SizedBox(height: 16),
 
-                    // 📝 TITLE
                     Text(
                       widget.hasMood ? "Mood Streak!" : "Belum Ada Mood",
                       style: const TextStyle(
@@ -1326,7 +1332,6 @@ class _StreakDialogState extends State<_StreakDialog> {
 
                     const SizedBox(height: 10),
 
-                    // 📄 DESKRIPSI
                     Text(
                       widget.hasMood
                           ? "Kamu sudah berhasil mencatat 1 mood hari ini"
@@ -1350,7 +1355,6 @@ class _StreakDialogState extends State<_StreakDialog> {
 
                     const SizedBox(height: 20),
 
-                    // 🔘 BUTTON
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
@@ -1373,7 +1377,6 @@ class _StreakDialogState extends State<_StreakDialog> {
             ),
           ),
 
-          // 🎉 CONFETTI (hanya kalau ada mood)
           if (widget.hasMood)
             Positioned.fill(
               child: Align(

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'mood_decor.dart';
 import 'mood_model.dart';
 
-class HomeContent extends StatelessWidget {
+class HomeContent extends StatefulWidget {
   const HomeContent({
     super.key,
     required this.userName,
@@ -17,6 +17,8 @@ class HomeContent extends StatelessWidget {
     required this.onLogMoodTap,
     required this.onStreakTap,
     required this.onReflectionTap,
+    required this.customInfluenceTags,
+    required this.onAddCustomInfluence,
   });
 
   final String userName;
@@ -30,10 +32,44 @@ class HomeContent extends StatelessWidget {
   final VoidCallback onLogMoodTap;
   final VoidCallback onStreakTap;
   final VoidCallback onReflectionTap;
+  final List<String> customInfluenceTags;
+  final ValueChanged<String> onAddCustomInfluence;
+
+
+  @override
+  State<HomeContent> createState() => _HomeContentState();
+}
+class _HomeContentState extends State<HomeContent> {
+  final List<String> customTags = [];
+  final TextEditingController tagController = TextEditingController();
+  List<String> get allTags => [
+  ...homeInfluenceTags,
+  ...customTags,
+];
+
+  void _addTag(String value) {
+    final trimmed = value.trim();
+    if (trimmed.isEmpty) return;
+
+    widget.onAddCustomInfluence(trimmed); 
+    widget.onInfluenceTap(trimmed); 
+
+    tagController.clear();
+  }
+
+  @override
+  void dispose() {
+    tagController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final moodDefinition = currentMood?.definition;
+    final moodDefinition = widget.currentMood?.definition;
+      final combinedTags = [
+    ...allTags,
+    ...widget.customInfluenceTags,
+  ];
 
     return SafeArea(
       child: SingleChildScrollView(
@@ -91,7 +127,7 @@ class HomeContent extends StatelessWidget {
                                   
                                   const SizedBox(height: 8),
                                   Text(
-                                    'Halo, $userName',
+                                    'Halo, ${widget.userName}',
                                     style: const TextStyle(
                                       fontSize: 28,
                                       fontWeight: FontWeight.bold,
@@ -105,7 +141,7 @@ class HomeContent extends StatelessWidget {
                               color: Colors.white.withValues(alpha: 0.2),
                               shape: const CircleBorder(),
                               child: IconButton(
-                                onPressed: onProfileTap,
+                                onPressed: widget.onProfileTap,
                                 icon: const Icon(
                                   Icons.person_rounded,
                                   color: Colors.white,
@@ -158,7 +194,7 @@ class HomeContent extends StatelessWidget {
 
                                   return InkWell(
                                     borderRadius: BorderRadius.circular(20),
-                                    onTap: () => onMoodTap(mood),
+                                    onTap: () => widget.onMoodTap(mood),
                                     child: AnimatedContainer(
                                       duration: const Duration(
                                         milliseconds: 220,
@@ -214,7 +250,7 @@ class HomeContent extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text(
-                      'Apa yang memengaruhimu?',
+                      'Faktor apa yang memengaruhi perasaanmu saat ini?',
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w700,
@@ -222,51 +258,84 @@ class HomeContent extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 12),
-                    Wrap(
-                      spacing: 10,
-                      runSpacing: 10,
-                      children: homeInfluenceTags.map((tag) {
-                        final selected = selectedInfluences.contains(tag);
-                        return InkWell(
-                          borderRadius: BorderRadius.circular(999),
-                          onTap: () => onInfluenceTap(tag),
-                          child: AnimatedContainer(
-                            duration: const Duration(milliseconds: 220),
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 14,
-                              vertical: 10,
-                            ),
-                            decoration: BoxDecoration(
-                              color: selected
-                                  ? appSecondary.withValues(alpha: 0.18)
-                                  : Colors.white,
-                              borderRadius: BorderRadius.circular(999),
-                              border: Border.all(
-                                color: selected
-                                    ? appPrimary
-                                    : const Color(0xFFE2E7F8),
+                    
+                      Wrap(
+                        spacing: 10,
+                        runSpacing: 10,
+                        children: combinedTags.map((tag) {
+                          final selected = widget.selectedInfluences.contains(tag);
+
+                          return InkWell(
+                            borderRadius: BorderRadius.circular(999),
+                            onTap: () {
+                              widget.onInfluenceTap(tag);
+                            },
+                            child: AnimatedContainer(
+                              duration: const Duration(milliseconds: 220),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 14,
+                                vertical: 10,
                               ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withValues(alpha: 0.04),
-                                  blurRadius: 8,
-                                  offset: const Offset(0, 4),
+                              decoration: BoxDecoration(
+                                color: selected
+                                    ? appSecondary.withValues(alpha: 0.18)
+                                    : Colors.white,
+                                borderRadius: BorderRadius.circular(999),
+                                border: Border.all(
+                                  color: selected
+                                      ? appPrimary
+                                      : const Color(0xFFE2E7F8),
                                 ),
-                              ],
-                            ),
-                            child: Text(
-                              tag,
-                              style: TextStyle(
-                                color: selected
-                                    ? const Color(0xFF384B9B)
-                                    : const Color(0xFF5A6485),
-                                fontWeight: FontWeight.w600,
+                              ),
+                              child: Text(
+                                tag,
+                                style: TextStyle(
+                                  color: selected
+                                      ? const Color(0xFF384B9B)
+                                      : const Color(0xFF5A6485),
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
                             ),
+                          );
+                        }).toList(),
+                      ),
+
+                    const SizedBox(height: 18),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: TextField(
+                            controller: tagController,
+                            decoration: InputDecoration(
+                              hintText: 'Tambah faktor lain...',
+                              filled: true,
+                              fillColor: Colors.white,
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 14,
+                                vertical: 10,
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(999),
+                                borderSide: BorderSide.none,
+                              ),
+                            ),
+                            onSubmitted: (value) {
+                              _addTag(value);
+                            },
+                            textInputAction: TextInputAction.done,
                           ),
-                        );
-                      }).toList(),
+                        ),
+                        const SizedBox(width: 8),
+                        IconButton(
+                          icon: const Icon(Icons.add_circle, color: appPrimary),
+                          onPressed: () {
+                            _addTag(tagController.text);
+                          },
+                        ),
+                      ],
                     ),
+
                     const SizedBox(height: 18),
                     Row(
                       children: [
@@ -282,20 +351,20 @@ class HomeContent extends StatelessWidget {
                             iconColor:
                                 moodDefinition?.color ??
                                 const Color(0xFF5163B9),
-                            onTap: onLogMoodTap,
+                            onTap: widget.onLogMoodTap,
                           ),
                         ),
                         const SizedBox(width: 14),
                         Expanded(
                           child: _InfoCard(
                             title: 'Energi',
-                            icon: energyIcon(energyLevel),
-                            value: energyLevel,
+                            icon: energyIcon(widget.energyLevel),
+                            value: widget.energyLevel,
                             tint: energyColor(
-                              energyLevel,
+                              widget.energyLevel,
                             ).withValues(alpha: 0.16),
-                            iconColor: energyColor(energyLevel),
-                            onTap: onEnergyTap,
+                            iconColor: energyColor(widget.energyLevel),
+                            onTap: widget.onEnergyTap,
                           ),
                         ),
                       ],
@@ -304,7 +373,7 @@ class HomeContent extends StatelessWidget {
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton.icon(
-                        onPressed: onLogMoodTap,
+                        onPressed: widget.onLogMoodTap,
                         icon: const Icon(Icons.edit_note_rounded),
                         label: const Text('Catat Mood'),
                       ),
@@ -312,11 +381,11 @@ class HomeContent extends StatelessWidget {
                     const SizedBox(height: 18),
                     _ActionCard(
                       title: 'Pola Terlihat',
-                      body: currentMood == null
+                      body: widget.currentMood == null
                           ? 'Catat mood pertamamu untuk mulai melihat pola emosi harian.'
                           : 'Kamu cenderung lebih stabil saat punya ritme istirahat yang cukup.',
                       icon: Icons.auto_graph_rounded,
-                      onTap: onReflectionTap,
+                      onTap: widget.onReflectionTap,
                       actionLabel: 'Lihat Refleksi',
                     ),
                     const SizedBox(height: 14),
@@ -325,7 +394,7 @@ class HomeContent extends StatelessWidget {
                       body:
                           'Jaga konsistensimu dengan melakukan check-in setiap hari.',
                       icon: Icons.local_fire_department_rounded,
-                      onTap: onStreakTap,
+                      onTap: widget.onStreakTap,
                       actionLabel: 'Lihat Riwayat',
                     ),
                   ],

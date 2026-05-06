@@ -66,7 +66,7 @@ const List<TestCategory> testCategories = [
     ],
   ),
   TestCategory(
-    title: 'Tes Stres',
+    title: 'Tes Stress',
     icon: Icons.thermostat_rounded,
     color: Color(0xFFFFB74D),
     description: 'Ukur tekanan harian dan energimu.',
