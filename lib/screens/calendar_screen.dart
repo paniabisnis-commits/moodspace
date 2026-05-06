@@ -218,9 +218,10 @@ class _CalendarScreenState extends State<CalendarScreen> {
                                 const SizedBox(height: 14),
                                 SizedBox(
                                   width: double.infinity,
-                                  child: ElevatedButton(
+                                  child: ElevatedButton.icon(
                                     onPressed: widget.onOpenMoodEntry,
-                                    child: const Text('Catat Mood'),
+                                    icon: const Icon(Icons.edit_note_rounded),
+                                    label: const Text('Catat Mood'),
                                   ),
                                 ),
                               ],

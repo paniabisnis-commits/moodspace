@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-
+import 'dart:ui';
+import 'package:confetti/confetti.dart';
 import 'calendar_screen.dart';
 import 'home_content.dart';
 import 'mood_decor.dart';
@@ -50,7 +51,7 @@ class _HomeScreenState extends State<HomeScreen> {
         onEnergyTap: _showEnergySheet,
         onLogMoodTap: () =>
             _openMoodDetail(currentMood?.definition ?? moodDefinitions[1]),
-        onStreakTap: _showStreakSheet,
+        onStreakTap: () => _showStreakDialog(context),
         onReflectionTap: _showReflectionSheet,
       ),
       CalendarScreen(
@@ -284,33 +285,27 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  void _showStreakSheet() {
-    showModalBottomSheet<void>(
+  void _showStreakDialog(BuildContext context) {
+    showGeneralDialog(
       context: context,
-      showDragHandle: true,
-      builder: (context) {
-        return Padding(
-          padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'Mood Streak',
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                  color: appInk,
-                ),
-              ),
-              const SizedBox(height: 12),
-              Text(
-                moodHistory.isEmpty
-                    ? 'Belum ada streak. Yuk mulai check-in hari ini.'
-                    : 'Kamu sudah punya ${moodHistory.length} catatan mood. Pertahankan konsistensimu ya.',
-                style: const TextStyle(height: 1.5, color: Color(0xFF657091)),
-              ),
-            ],
+      barrierDismissible: true,
+      barrierLabel: "",
+      barrierColor: Colors.black.withValues(alpha: 0.4),
+      transitionDuration: const Duration(milliseconds: 450),
+      pageBuilder: (context, animation, secondaryAnimation) {
+        return Center(child: _StreakDialog(hasMood: currentMood != null));
+      },
+      transitionBuilder: (context, animation, secondaryAnimation, child) {
+        final curved = CurvedAnimation(
+          parent: animation,
+          curve: Curves.easeOutCubic,
+        );
+
+        return FadeTransition(
+          opacity: curved,
+          child: ScaleTransition(
+            scale: Tween<double>(begin: 0.85, end: 1.0).animate(curved),
+            child: child,
           ),
         );
       },
@@ -691,7 +686,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       onPrimaryTap: () =>
                           _showSimpleDialog('Saran', stats['suggestion']!),
                       secondaryLabel: 'Lihat Riwayat',
-                      onSecondaryTap: _showStreakSheet,
+                      onSecondaryTap: () => _showStreakDialog(context),
                     ),
                     if (testHistory.isNotEmpty) ...[
                       const SizedBox(height: 14),
@@ -1222,6 +1217,180 @@ class _NavItem {
 
   final String label;
   final IconData icon;
+}
+
+class _StreakDialog extends StatefulWidget {
+  final bool hasMood;
+  const _StreakDialog({required this.hasMood});
+
+  @override
+  State<_StreakDialog> createState() => _StreakDialogState();
+}
+
+class _StreakDialogState extends State<_StreakDialog> {
+  late ConfettiController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _controller = ConfettiController(duration: const Duration(seconds: 2));
+
+    if (widget.hasMood) {
+      _controller.play();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      type: MaterialType.transparency,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          // 🔥 Background blur + overlay gelap
+          BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+            child: Container(color: Colors.black.withValues(alpha: 0.3)),
+          ),
+
+          // 💎 Glassmorphism Dialog
+          Center(
+            child: Dialog(
+              backgroundColor: Colors.transparent,
+              child: Container(
+                padding: const EdgeInsets.all(22),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(28),
+
+                  // 🔥 WARNA DINAMIS (INI YANG KAMU MAU)
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: widget.hasMood
+                        ? [
+                            appPrimary.withValues(alpha: 0.4),
+                            appSecondary.withValues(alpha: 0.3),
+                          ]
+                        : [
+                            Colors.white.withValues(alpha: 0.15),
+                            Colors.white.withValues(alpha: 0.08),
+                          ],
+                  ),
+
+                  border: Border.all(
+                    color: Colors.white.withValues(alpha: 0.2),
+                  ),
+
+                  boxShadow: [
+                    BoxShadow(
+                      color: widget.hasMood
+                          ? appPrimary.withValues(alpha: 0.35) // glow ungu
+                          : Colors.black.withValues(alpha: 0.1),
+                      blurRadius: 25,
+                      offset: const Offset(0, 10),
+                    ),
+                  ],
+                ),
+
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // 🔥 ICON
+                    Container(
+                      padding: const EdgeInsets.all(14),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.white.withValues(alpha: 0.2),
+                      ),
+                      child: Icon(
+                        widget.hasMood
+                            ? Icons.local_fire_department_rounded
+                            : Icons.sentiment_neutral_rounded,
+                        size: 42,
+                        color: widget.hasMood ? Colors.white : Colors.white70,
+                      ),
+                    ),
+
+                    const SizedBox(height: 16),
+
+                    // 📝 TITLE
+                    Text(
+                      widget.hasMood ? "Mood Streak!" : "Belum Ada Mood",
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+
+                    const SizedBox(height: 10),
+
+                    // 📄 DESKRIPSI
+                    Text(
+                      widget.hasMood
+                          ? "Kamu sudah berhasil mencatat 1 mood hari ini"
+                          : "Kamu belum mencatat mood hari ini",
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(fontSize: 14, color: Colors.white),
+                    ),
+
+                    const SizedBox(height: 8),
+
+                    Text(
+                      widget.hasMood
+                          ? "Konsistensi kecil hari ini adalah langkah besar untuk dirimu"
+                          : "Yuk mulai catat mood pertamamu sekarang",
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: Colors.white70,
+                      ),
+                    ),
+
+                    const SizedBox(height: 20),
+
+                    // 🔘 BUTTON
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          foregroundColor: appPrimary,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(999),
+                          ),
+                        ),
+                        onPressed: () => Navigator.pop(context),
+                        child: Text(
+                          widget.hasMood ? "Lanjutkan" : "Catat Mood",
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+
+          // 🎉 CONFETTI (hanya kalau ada mood)
+          if (widget.hasMood)
+            Positioned.fill(
+              child: Align(
+                alignment: Alignment.topCenter,
+                child: ConfettiWidget(
+                  confettiController: _controller,
+                  blastDirection: 3.14 / 2,
+                  emissionFrequency: 0.05,
+                  numberOfParticles: 20,
+                  gravity: 0.3,
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
 }
 
 const List<_NavItem> _tabs = [

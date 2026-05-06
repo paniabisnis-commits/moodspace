@@ -88,14 +88,7 @@ class HomeContent extends StatelessWidget {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  const Text(
-                                    'Sanctuary',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: Colors.white70,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
+                                  
                                   const SizedBox(height: 8),
                                   Text(
                                     'Halo, $userName',
@@ -154,7 +147,7 @@ class HomeContent extends StatelessWidget {
                               constraints: BoxConstraints(
                                 minWidth:
                                     MediaQuery.of(context).size.width -
-                                    44, // biar full feel
+                                    44, 
                               ),
                               child: Row(
                                 mainAxisAlignment:
@@ -171,7 +164,7 @@ class HomeContent extends StatelessWidget {
                                         milliseconds: 220,
                                       ),
                                       padding: const EdgeInsets.symmetric(
-                                        horizontal: 12, // diperbesar
+                                        horizontal: 12, 
                                         vertical: 10,
                                       ),
                                       decoration: BoxDecoration(
@@ -188,13 +181,13 @@ class HomeContent extends StatelessWidget {
                                             color: mood.color,
                                             size: selected
                                                 ? 30
-                                                : 26, // lebih gede
+                                                : 26, 
                                           ),
                                           const SizedBox(height: 6),
                                           Text(
                                             mood.label,
                                             style: TextStyle(
-                                              fontSize: 12, // konsisten
+                                              fontSize: 12, 
                                               fontWeight: selected
                                                   ? FontWeight.w700
                                                   : FontWeight.w500,
