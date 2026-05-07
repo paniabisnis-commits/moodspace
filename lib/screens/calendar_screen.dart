@@ -42,7 +42,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
             SliverPersistentHeader(
               pinned: true,
               delegate: SliverPinnedHeader(
-                height: 142,
+                height: 155,
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(20, 18, 20, 12),
                   child: MoodHeader(

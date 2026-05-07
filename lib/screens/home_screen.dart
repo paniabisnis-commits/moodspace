@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'dart:ui';
 import 'package:confetti/confetti.dart';
 import 'calendar_screen.dart';
@@ -9,6 +10,8 @@ import 'mood_model.dart';
 import 'settings_detail_screens.dart';
 import 'test_category_screen.dart';
 import 'test_result_model.dart' as result_model;
+import 'about_app_screen.dart';
+import 'privacy_policy_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key, required this.userName});
@@ -31,11 +34,14 @@ class _HomeScreenState extends State<HomeScreen> {
   final List<String> customInfluenceTags = [];
   String _analysisRange = 'Bulanan';
   String _statisticsRange = 'Mingguan';
-
+  String appVersion = '';
+  String buildNumber = '';
   @override
   void initState() {
     super.initState();
     userName = widget.userName;
+
+    _loadAppInfo();
   }
 
   @override
@@ -394,7 +400,7 @@ class _HomeScreenState extends State<HomeScreen> {
             SliverPersistentHeader(
               pinned: true,
               delegate: SliverPinnedHeader(
-                height: 142,
+                height: 155,
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(20, 18, 20, 12),
                   child: MoodHeader(
@@ -539,7 +545,7 @@ class _HomeScreenState extends State<HomeScreen> {
             SliverPersistentHeader(
               pinned: true,
               delegate: SliverPinnedHeader(
-                height: 142,
+                height: 155,
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(20, 18, 20, 12),
                   child: MoodHeader(
@@ -755,7 +761,7 @@ class _HomeScreenState extends State<HomeScreen> {
             SliverPersistentHeader(
               pinned: true,
               delegate: SliverPinnedHeader(
-                height: 142,
+                height: 155,
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(20, 18, 20, 12),
                   child: MoodHeader(
@@ -836,7 +842,25 @@ class _HomeScreenState extends State<HomeScreen> {
                         Icons.file_download_outlined,
                         _openExportData,
                       ),
-                    ].map((item) {
+                      (
+                        'Tentang Aplikasi',
+                        Icons.info_outline_rounded,
+                        _openAboutApp,
+                      ),
+
+                      (
+                        'Privacy Policy',
+                        Icons.privacy_tip_outlined,
+                        _openPrivacyPolicy,
+                      ),
+
+                      (
+                        'Hubungi Kami',
+                        Icons.support_agent_rounded,
+                        _openContactSupport,
+                      ),
+                    ]
+                    .map((item) {
                       return Padding(
                         padding: const EdgeInsets.only(bottom: 12),
                         child: InkWell(
@@ -875,6 +899,37 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       );
                     }),
+                    Divider(
+  color: Colors.grey.withValues(alpha: 0.15),
+),
+
+const SizedBox(height: 18),
+
+Center(
+  child: Column(
+    children: [
+      Text(
+        'MoodSpace',
+        style: TextStyle(
+          fontSize: 15,
+          fontWeight: FontWeight.w700,
+          color: appPrimary.withValues(alpha: 0.9),
+        ),
+      ),
+
+      const SizedBox(height: 6),
+
+      Text(
+        'Version $appVersion ($buildNumber)',
+        style: const TextStyle(
+          fontSize: 12.5,
+          color: Color(0xFF9AA3C0),
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+    ],
+  ),
+),
                   ],
                 ),
               ),
@@ -919,6 +974,63 @@ class _HomeScreenState extends State<HomeScreen> {
       context,
     ).push(MaterialPageRoute(builder: (_) => const ExportDataScreen()));
   }
+
+  void _openAboutApp() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => AboutAppScreen(
+          version: appVersion,
+          buildNumber: buildNumber,
+        ),
+      ),
+    );
+  }
+
+void _openPrivacyPolicy() {
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (_) => const PrivacyPolicyScreen(),
+    ),
+  );
+}
+
+void _openContactSupport() {
+  showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: const Text('Hubungi Kami'),
+      content: const Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Punya saran, feedback, atau menemukan bug?',
+          ),
+
+          SizedBox(height: 14),
+
+          Row(
+            children: [
+              Icon(Icons.email_outlined, size: 18),
+              SizedBox(width: 8),
+              Expanded(
+                child: Text('support@moodspace.app'),
+              ),
+            ],
+          ),
+        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text('Tutup'),
+        ),
+      ],
+    ),
+  );
+}
 
   Map<String, int> _moodCountForRange(String range) {
     final seed = switch (range) {
@@ -1200,6 +1312,15 @@ class _HomeScreenState extends State<HomeScreen> {
 
     if (result == null) return;
     setState(() => testHistory.add(result));
+  }
+
+  Future<void> _loadAppInfo() async {
+    final packageInfo = await PackageInfo.fromPlatform();
+
+    setState(() {
+      appVersion = packageInfo.version;
+      buildNumber = packageInfo.buildNumber;
+    });
   }
 
   void _showTestHistory() {
@@ -1660,7 +1781,6 @@ class MoodLineChartPainter extends CustomPainter {
       ..color = Colors.grey.withValues(alpha: 0.15)
       ..strokeWidth = 1;
 
-    // GRID
     for (int i = 0; i < 5; i++) {
       final y = size.height * (i / 4);
 
@@ -1697,13 +1817,10 @@ class MoodLineChartPainter extends CustomPainter {
       }
     }
 
-    // AREA
     canvas.drawPath(fillPath, fillPaint);
 
-    // LINE
     canvas.drawPath(path, linePaint);
 
-    // DOTS
     for (int i = 0; i < values.length; i++) {
       final x = (size.width / (values.length - 1)) * i;
 
