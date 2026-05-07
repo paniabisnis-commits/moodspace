@@ -384,7 +384,7 @@ class _HomeContentState extends State<HomeContent> {
                       body: widget.currentMood == null
                           ? 'Catat mood pertamamu untuk mulai melihat pola emosi harian.'
                           : 'Kamu cenderung lebih stabil saat punya ritme istirahat yang cukup.',
-                      icon: Icons.auto_graph_rounded,
+                      icon: Icons.hub_rounded,
                       onTap: widget.onReflectionTap,
                       actionLabel: 'Lihat Refleksi',
                     ),

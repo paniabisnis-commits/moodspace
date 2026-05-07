@@ -665,9 +665,9 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ),
                           TextButton(
-                            onPressed: () => _showSimpleDialog(
-                              'Wawasan ${stats['label']}',
-                              stats['topMood']!,
+                            onPressed: () => _showMoodTrendDialog(
+                              counts,
+                              _statisticsRange,
                             ),
                             child: const Text('Pelajari Tren'),
                           ),
@@ -1111,6 +1111,80 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  void _showMoodTrendDialog(
+  Map<String, int> counts,
+  String range,
+) {
+  final values = moodDefinitions.map((mood) {
+    return (counts[mood.label] ?? 0).toDouble();
+  }).toList();
+
+  final maxValue = values.reduce(
+    (a, b) => a > b ? a : b,
+  );
+
+  showDialog(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        title: Text('Tren Mood $range'),
+        content: SizedBox(
+          width: double.maxFinite,
+          height: 340,
+          child: Column(
+            children: [
+              Expanded(
+                child: CustomPaint(
+                  painter: MoodLineChartPainter(
+                    values: values,
+                    maxValue: maxValue == 0 ? 1 : maxValue,
+                    isMonthly: range == 'Bulanan',
+                  ),
+                  child: Container(),
+                ),
+              ),
+
+              const SizedBox(height: 18),
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: moodDefinitions.map((mood) {
+                  return Column(
+                    children: [
+                      Icon(
+                        mood.icon,
+                        color: mood.color,
+                        size: 24,
+                      ),
+
+                      const SizedBox(height: 4),
+
+                      Text(
+                        mood.label,
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: mood.color,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  );
+                }).toList(),
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Tutup'),
+          ),
+        ],
+      );
+    },
+  );
+}
+
   Future<void> _openTestCategory() async {
     final result = await Navigator.of(context)
         .push<result_model.TestResultModel>(
@@ -1403,3 +1477,99 @@ const List<_NavItem> _tabs = [
   _NavItem('Statistik', Icons.bar_chart_rounded),
   _NavItem('Pengaturan', Icons.settings_rounded),
 ];
+
+class MoodLineChartPainter extends CustomPainter {
+  MoodLineChartPainter({
+    required this.values,
+    required this.maxValue,
+    required this.isMonthly,
+  });
+
+  final List<double> values;
+  final double maxValue;
+  final bool isMonthly;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final linePaint = Paint()
+      ..color = appPrimary
+      ..strokeWidth = isMonthly ? 5 : 4
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round;
+
+    final fillPaint = Paint()
+      ..color = appPrimary.withValues(alpha: 0.08)
+      ..style = PaintingStyle.fill;
+
+    final gridPaint = Paint()
+      ..color = Colors.grey.withValues(alpha: 0.15)
+      ..strokeWidth = 1;
+
+    // GRID
+    for (int i = 0; i < 5; i++) {
+      final y = size.height * (i / 4);
+
+      canvas.drawLine(
+        Offset(0, y),
+        Offset(size.width, y),
+        gridPaint,
+      );
+    }
+
+    final path = Path();
+    final fillPath = Path();
+
+    for (int i = 0; i < values.length; i++) {
+      final x = (size.width / (values.length - 1)) * i;
+
+      final normalized = values[i] / maxValue;
+
+      final y = size.height - (normalized * (size.height - 30));
+
+      if (i == 0) {
+        path.moveTo(x, y);
+
+        fillPath.moveTo(x, size.height);
+        fillPath.lineTo(x, y);
+      } else {
+        path.lineTo(x, y);
+        fillPath.lineTo(x, y);
+      }
+
+      if (i == values.length - 1) {
+        fillPath.lineTo(x, size.height);
+        fillPath.close();
+      }
+    }
+
+    // AREA
+    canvas.drawPath(fillPath, fillPaint);
+
+    // LINE
+    canvas.drawPath(path, linePaint);
+
+    // DOTS
+    for (int i = 0; i < values.length; i++) {
+      final x = (size.width / (values.length - 1)) * i;
+
+      final normalized = values[i] / maxValue;
+
+      final y = size.height - (normalized * (size.height - 30));
+
+      final dotPaint = Paint()
+        ..color = moodDefinitions[i].color
+        ..style = PaintingStyle.fill;
+
+      canvas.drawCircle(
+        Offset(x, y),
+        isMonthly ? 6 : 5,
+        dotPaint,
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return true;
+  }
+}
