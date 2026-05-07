@@ -264,37 +264,44 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _showReflectionSheet() {
-    showModalBottomSheet<void>(
-      context: context,
-      showDragHandle: true,
-      builder: (context) {
-        return Padding(
-          padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'Refleksi Hari Ini',
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                  color: appInk,
-                ),
-              ),
-              const SizedBox(height: 12),
-              Text(
-                currentMood == null
-                    ? 'Coba mulai dengan satu catatan mood sederhana hari ini.'
-                    : 'Perasaan ${currentMood!.mood.toLowerCase()} muncul bersama energi ${energyLevel.toLowerCase()}. Coba jaga ritme yang membuatmu lebih nyaman.',
-                style: const TextStyle(height: 1.5, color: Color(0xFF657091)),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
+  showGeneralDialog(
+    context: context,
+    barrierDismissible: true,
+    barrierLabel: "",
+    barrierColor: Colors.black.withValues(alpha: 0.4),
+    transitionDuration: const Duration(milliseconds: 450),
+    pageBuilder: (context, animation, secondaryAnimation) {
+      return Center(
+        child: _ReflectionDialog(
+          currentMood: currentMood,
+          energyLevel: energyLevel,
+        ),
+      );
+    },
+    transitionBuilder: (
+      context,
+      animation,
+      secondaryAnimation,
+      child,
+    ) {
+      final curved = CurvedAnimation(
+        parent: animation,
+        curve: Curves.easeOutCubic,
+      );
+
+      return FadeTransition(
+        opacity: curved,
+        child: ScaleTransition(
+          scale: Tween<double>(
+            begin: 0.85,
+            end: 1.0,
+          ).animate(curved),
+          child: child,
+        ),
+      );
+    },
+  );
+}
 
   void _showStreakDialog(BuildContext context) {
     showGeneralDialog(
@@ -1464,6 +1471,154 @@ class _StreakDialogState extends State<_StreakDialog> {
                 ),
               ),
             ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ReflectionDialog extends StatelessWidget {
+  const _ReflectionDialog({
+    required this.currentMood,
+    required this.energyLevel,
+  });
+
+  final MoodModel? currentMood;
+  final String energyLevel;
+
+  @override
+  Widget build(BuildContext context) {
+    final hasMood = currentMood != null;
+
+    return Material(
+      type: MaterialType.transparency,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+            child: Container(
+              color: Colors.black.withValues(alpha: 0.3),
+            ),
+          ),
+
+          Center(
+            child: Dialog(
+              backgroundColor: Colors.transparent,
+              child: Container(
+                padding: const EdgeInsets.all(22),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(28),
+
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: hasMood
+                        ? [
+                            appPrimary.withValues(alpha: 0.4),
+                            appSecondary.withValues(alpha: 0.3),
+                          ]
+                        : [
+                            Colors.white.withValues(alpha: 0.15),
+                            Colors.white.withValues(alpha: 0.08),
+                          ],
+                  ),
+
+                  border: Border.all(
+                    color: Colors.white.withValues(alpha: 0.2),
+                  ),
+
+                  boxShadow: [
+                    BoxShadow(
+                      color: hasMood
+                          ? appPrimary.withValues(alpha: 0.35)
+                          : Colors.black.withValues(alpha: 0.1),
+                      blurRadius: 25,
+                      offset: const Offset(0, 10),
+                    ),
+                  ],
+                ),
+
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(14),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.white.withValues(alpha: 0.2),
+                      ),
+                      child: Icon(
+                        hasMood
+                            ? Icons.pattern_rounded
+                            : Icons.psychology_alt_rounded,
+                        size: 42,
+                        color: Colors.white,
+                      ),
+                    ),
+
+                    const SizedBox(height: 16),
+
+                    Text(
+                      hasMood
+                          ? "Refleksi Emosi"
+                          : "Belum Ada Refleksi",
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+
+                    const SizedBox(height: 12),
+
+                    Text(
+                      hasMood
+                          ? "Kamu sedang merasa ${currentMood!.mood.toLowerCase()} dengan energi ${energyLevel.toLowerCase()}."
+                          : "Mulailah mencatat mood untuk melihat refleksi emosimu.",
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: Colors.white,
+                        height: 1.5,
+                      ),
+                    ),
+
+                    const SizedBox(height: 10),
+
+                    Text(
+                      hasMood
+                          ? "Pola emosimu menunjukkan bahwa ritme istirahat dan aktivitas yang seimbang membantu menjaga kestabilan perasaanmu."
+                          : "Semakin rutin check-in mood, semakin akurat pola emosimu.",
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: Colors.white70,
+                        height: 1.5,
+                      ),
+                    ),
+
+                    const SizedBox(height: 22),
+
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          foregroundColor: appPrimary,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(999),
+                          ),
+                        ),
+                        onPressed: () => Navigator.pop(context),
+                        child: const Text("Mengerti"),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );
