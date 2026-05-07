@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'dart:ui';
 import 'mood_decor.dart';
 import 'mood_model.dart';
 import 'test_category_model.dart';
@@ -310,6 +310,128 @@ class ResultScreen extends StatelessWidget {
     }
   }
 
+  void _showSaveFeedback(BuildContext context) {
+  showGeneralDialog(
+    context: context,
+    barrierDismissible: true,
+    barrierLabel: "",
+    barrierColor: Colors.black.withValues(alpha: 0.4),
+    transitionDuration: const Duration(milliseconds: 450),
+    pageBuilder: (context, animation, secondaryAnimation) {
+      return Center(
+        child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
+        child: Dialog(
+          backgroundColor: Colors.transparent,
+          child: Container(
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(28),
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  Colors.white.withValues(alpha: 0.16),
+                  Colors.white.withValues(alpha: 0.08),
+                ],
+              ),
+              border: Border.all(
+                color: Colors.white.withValues(alpha: 0.18),
+                width: 1.2,
+              ),
+
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.08),
+                  blurRadius: 28,
+                  offset: const Offset(0, 12),
+                ),
+              ],
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 72,
+                  height: 72,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.18),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.check_circle_rounded,
+                    color: appPrimary,
+                    size: 42,
+                  ),
+                ),
+
+                const SizedBox(height: 18),
+
+                const Text(
+                  'Hasil Berhasil Disimpan!',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: Color.fromARGB(255, 0, 0, 0),
+                  ),
+                ),
+
+                const SizedBox(height: 10),
+
+                Text(
+                  'Insight dari tes "${resultModel.testName}" sudah ditambahkan ke riwayat dan statistik emosimu.',
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    height: 1.5,
+                    color: Color.fromARGB(255, 0, 0, 0),
+                    fontSize: 14,
+                  ),
+                ),
+
+                const SizedBox(height: 22),
+
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: appPrimary,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(999),
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      Navigator.of(context).pop(resultModel);
+                    },
+                    child: const Text('Lanjutkan'),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+    },
+    transitionBuilder: (context, animation, secondaryAnimation, child) {
+      final curved = CurvedAnimation(
+        parent: animation,
+        curve: Curves.easeOutCubic,
+      );
+
+      return FadeTransition(
+        opacity: curved,
+        child: ScaleTransition(
+          scale: Tween<double>(begin: 0.85, end: 1.0).animate(curved),
+          child: child,
+        ),
+      );
+    },
+  );
+}
+
   @override
   Widget build(BuildContext context) {
     final levelColor = _getLevelColor(resultModel.level);
@@ -503,7 +625,9 @@ class ResultScreen extends StatelessWidget {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: levelColor,
                     ),
-                    onPressed: () => Navigator.of(context).pop(resultModel),
+                    onPressed: () {
+                      _showSaveFeedback(context);
+                    },
                     child: const Text('Simpan Hasil'),
                   ),
                 ),

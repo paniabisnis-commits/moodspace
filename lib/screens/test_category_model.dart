@@ -68,7 +68,7 @@ const List<TestCategory> testCategories = [
   TestCategory(
     title: 'Tes Stress',
     icon: Icons.thermostat_rounded,
-    color: Color(0xFFFFB74D),
+    color: Color.fromARGB(255, 246, 163, 40),
     description: 'Ukur tekanan harian dan energimu.',
     questions: [
       TestQuestion(text: 'Saya merasa hari-hari saya berjalan terlalu cepat.'),
