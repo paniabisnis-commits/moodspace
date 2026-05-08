@@ -229,7 +229,7 @@ class AboutAppScreen extends StatelessWidget {
 
                     Center(
                       child: Text(
-                        '© 2025 MoodSpace',
+                        '© 2026 MoodSpace',
                         style: TextStyle(
                           color: Color(0xFF9AA3BD),
                           fontSize: 12,
