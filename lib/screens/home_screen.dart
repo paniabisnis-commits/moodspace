@@ -845,7 +845,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
 
                       (
-                        'Mental Health Chatbot',
+                        'MoodSpace Assistant',
                         Icons.psychology_rounded,
                         _openMentalHealthChatbot,
                       ),

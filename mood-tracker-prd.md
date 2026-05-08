@@ -321,6 +321,7 @@ Menyediakan pengaturan inti dengan tampilan sederhana dan bersih.
   - `Pengingat Harian`
   - `Privasi & Keamanan`
   - `Export Data`
+  - `MoodSpace Assistant`
   - `Tentang Aplikasi`
   - `Kebijakan Privasi`
   - `Hubungi Kami`
@@ -395,6 +396,52 @@ Menjadi alur utama pencatatan mood yang cepat, jelas, dan nyaman secara emosiona
 - `NotesInput`
 - `ActivityTagSelector`
 - `SaveMoodButton`
+
+## 2.7 MoodSpace Assistant
+
+### Screen Goal
+Menyediakan ruang percakapan suportif yang membantu pengguna melakukan refleksi emosi secara ringan dan nyaman.
+
+### Content Blocks
+- Greeting message
+- Chat conversation area
+- Suggested prompts
+- Message input field
+- Emotional support disclaimer
+
+### Suggested Layout
+1. Header dengan back button
+2. Intro supportive text
+3. Chat messages area
+4. Suggested prompt chips
+5. Text input + send button
+
+### UI Elements
+- Greeting:
+  `Hai, aku siap menemanimu hari ini 🌼`
+  
+- Suggested prompts:
+  - `Aku merasa cemas`
+  - `Hari ini melelahkan`
+  - `Aku sulit fokus`
+  - `Aku ingin menenangkan diri`
+
+- Input placeholder:
+  `Ceritakan apa yang kamu rasakan...`
+
+### UX Notes
+- Chatbot harus menggunakan bahasa suportif dan netral.
+- Hindari respon yang menghakimi atau terlalu formal.
+- Chatbot tidak memberikan diagnosis medis atau psikologis.
+- Fokus utama adalah membantu pengguna merasa didengar dan lebih tenang.
+
+### Component Hierarchy
+- `AssistantScreen`
+- `AssistantHeader`
+- `ChatBubble`
+- `PromptChips`
+- `MessageInputBar`
+- `SupportiveDisclaimer`
 
 ## 3. Design System
 
