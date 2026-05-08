@@ -73,7 +73,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
                               children: [
 
                                 Text(
-                                  'Privacy Policy',
+                                  'Kebijakan Privasi',
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 18,
