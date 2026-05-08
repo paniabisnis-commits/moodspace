@@ -53,6 +53,35 @@ Additional Screen:
 
 ## 2. Screen-by-Screen UI Specification
 
+## 2.0 Onboarding Flow
+
+### Screen Goal
+Membangun koneksi emosional awal dan memberikan pengalaman onboarding yang personal sebelum pengguna mulai menggunakan aplikasi.
+
+### Flow
+1. User membuka aplikasi pertama kali
+2. User memasukkan nama panggilan
+3. User membaca komitmen self-care singkat
+4. User melanjutkan ke Home Screen
+
+### UI Elements
+- Greeting illustration/icon
+- Name input field
+- Supportive onboarding text
+- Continue button
+- Commitment/self-care message
+
+### UX Notes
+- Onboarding harus terasa ringan dan tidak terlalu panjang.
+- Input nama digunakan untuk personalisasi pengalaman pengguna.
+- Bahasa yang digunakan harus hangat dan suportif.
+
+### Component Hierarchy
+- `NameInputScreen`
+- `CommitmentScreen`
+- `PrimaryButton`
+- `SectionAccentCard`
+
 ## 2.1 Home Screen
 
 ### Screen Goal
@@ -169,6 +198,7 @@ Memberikan insight emosional yang terasa personal, sederhana, dan suportif.
 - Emotional breakdown
 - Relationship insights (`Hubungan`)
 - Personality trends (`Kepribadian`)
+- Simple reflective insights
 
 ### Suggested Layout
 1. Header title
@@ -180,7 +210,6 @@ Memberikan insight emosional yang terasa personal, sederhana, dan suportif.
 
 ### UI Elements
 - Emotional breakdown:
-  - donut chart sederhana atau horizontal bars
   - label: `Senang`, `Sedih`, `Cemas`, `Tenang`, `Lelah`
 - `Hubungan` card:
   - contoh insight: `Mood kamu cenderung lebih stabil saat interaksi sosial meningkat.`
@@ -195,6 +224,10 @@ Memberikan insight emosional yang terasa personal, sederhana, dan suportif.
 ### UX Notes
 - Analysis harus terasa seperti insight, bukan diagnosis.
 - Tambahkan satu line helper text: `Insight ini membantu kamu melihat pola, bukan menilai dirimu.`
+- Insight ditampilkan berdasarkan pola sederhana dari data mood pengguna.
+
+### Emotional Safety Disclaimer
+MoodSpace bukan alat diagnosis medis atau psikologis, melainkan media refleksi diri dan pencatatan suasana hati.
 
 ### Component Hierarchy
 - `AnalysisScreen`
@@ -268,6 +301,9 @@ Menyediakan pengaturan inti dengan tampilan sederhana dan bersih.
 - Daily reminders
 - Privacy & security
 - Data export
+- About the app
+- Privacy policy
+- Contact us
 
 ### Suggested Layout
 1. Header title
@@ -279,17 +315,20 @@ Menyediakan pengaturan inti dengan tampilan sederhana dan bersih.
 - Profile row:
   - avatar
   - name
-  - email or guest mode
+  - deskripsi
 - Settings items:
   - `Notifikasi`
   - `Pengingat Harian`
   - `Privasi & Keamanan`
   - `Export Data`
   - `Tentang Aplikasi`
+  - `Kebijakan Privasi`
+  - `Hubungi Kami`
 
 ### UX Notes
 - Gunakan grouped list dengan ikon sederhana.
 - Item destruktif seperti hapus data harus dipisahkan visualnya.
+- Pengguna dapat mengatur waktu pengingat harian menggunakan time picker sederhana.
 
 ### Component Hierarchy
 - `SettingsScreen`
@@ -544,10 +583,11 @@ Tambahan:
 - Completion rate log mood
 
 ## 8.4 Functional Requirements
-- User dapat menyimpan 1+ mood per hari
-- Data mood disimpan secara lokal/cloud
+- User dapat menyimpan 1 mood per hari
+- Data mood saat ini disimpan secara lokal pada perangkat pengguna
 - Calendar menampilkan mood berdasarkan tanggal
 - Statistics dihitung dari mood history
+- Pengguna dapat mengakses halaman Privacy Policy melalui Settings.
 
 ## 8.5 Edge Cases
 - Tidak ada data → tampilkan empty state
@@ -556,7 +596,6 @@ Tambahan:
 
 ## 8.6 Constraints
 - Platform: Flutter (mobile-first)
-- Offline-first capability (optional)
 - Tidak menggunakan chart library berat
 
 ## 9. Final Recommendation

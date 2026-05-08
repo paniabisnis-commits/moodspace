@@ -10,6 +10,7 @@ import 'mood_model.dart';
 import 'settings_detail_screens.dart';
 import 'test_category_screen.dart';
 import 'test_result_model.dart' as result_model;
+import 'mental_health_chatbot_screen.dart';
 import 'about_app_screen.dart';
 import 'privacy_policy_screen.dart';
 
@@ -842,6 +843,13 @@ class _HomeScreenState extends State<HomeScreen> {
                         Icons.file_download_outlined,
                         _openExportData,
                       ),
+
+                      (
+                        'Mental Health Chatbot',
+                        Icons.psychology_rounded,
+                        _openMentalHealthChatbot,
+                      ),
+
                       (
                         'Tentang Aplikasi',
                         Icons.info_outline_rounded,
@@ -849,7 +857,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
 
                       (
-                        'Privacy Policy',
+                        'Kebijakan Privasi',
                         Icons.privacy_tip_outlined,
                         _openPrivacyPolicy,
                       ),
@@ -973,6 +981,14 @@ Center(
     await Navigator.of(
       context,
     ).push(MaterialPageRoute(builder: (_) => const ExportDataScreen()));
+  }
+
+  Future<void> _openMentalHealthChatbot() async {
+    await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => const MentalHealthChatbotScreen(),
+      ),
+    );
   }
 
   void _openAboutApp() {
