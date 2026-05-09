@@ -1,7 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
+import 'home_screen.dart';
 import 'intro_flow_screen.dart';
 import 'mood_decor.dart';
 
@@ -37,17 +38,47 @@ class _SplashScreenState extends State<SplashScreen>
       end: 1,
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutBack));
 
-    _controller.forward().whenComplete(() async {
-      await Future.delayed(const Duration(seconds: 2));
+     _controller.forward();
 
-      if (!mounted) return;
-
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const IntroFlowScreen()),
-      );
-    });
+    checkUser();
   }
+
+  Future<void> checkUser() async {
+
+  final prefs = await SharedPreferences.getInstance();
+
+  final isOnboardingDone =
+      prefs.getBool('is_onboarding_done') ?? false;
+
+  final savedName =
+      prefs.getString('user_name') ?? '';
+
+  await Future.delayed(const Duration(seconds: 2));
+
+  if (!mounted) return;
+
+  if (isOnboardingDone) {
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (_) => HomeScreen(
+          userName: savedName,
+        ),
+      ),
+    );
+
+  } else {
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (_) => const IntroFlowScreen(),
+      ),
+    );
+
+  }
+}
 
   @override
   void dispose() {

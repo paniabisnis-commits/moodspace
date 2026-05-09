@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 import 'home_screen.dart';
 import 'mood_decor.dart';
 import 'mood_model.dart';
 
-class CommitmentScreen extends StatelessWidget {
+class CommitmentScreen extends StatefulWidget {
   const CommitmentScreen({super.key, required this.userName});
 
   final String userName;
 
+  @override
+  State<CommitmentScreen> createState() => _CommitmentScreenState();
+}
+
+class _CommitmentScreenState extends State<CommitmentScreen> {
   @override
   Widget build(BuildContext context) {
     final commitments = [
@@ -52,7 +57,7 @@ class CommitmentScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 24),
                 Text(
-                  '$userName, yuk kita buat komitmen',
+                  '${widget.userName}, yuk kita buat komitmen',
                   style: const TextStyle(
                     fontSize: 30,
                     fontWeight: FontWeight.bold,
@@ -120,14 +125,24 @@ class CommitmentScreen extends StatelessWidget {
                   width: double.infinity,
                   height: 65,
                   child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => HomeScreen(userName: userName),
-                        ),
-                      );
-                    },
+                    onPressed: () async {
+
+                        final navigator = Navigator.of(context);
+
+                        final prefs = await SharedPreferences.getInstance();
+
+                        await prefs.setString('user_name', widget.userName);
+                        await prefs.setBool('is_onboarding_done', true);
+
+                        if (!mounted) return;
+
+                        navigator.pushReplacement(
+                          MaterialPageRoute(
+                            builder: (_) =>
+                                HomeScreen(userName: widget.userName),
+                          ),
+                        );
+                      },
                     child: const Text('Lanjutkan'),
                   ),
                 ),

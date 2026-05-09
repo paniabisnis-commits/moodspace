@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:ui';
 import 'package:confetti/confetti.dart';
 import 'calendar_screen.dart';
@@ -35,12 +36,14 @@ class _HomeScreenState extends State<HomeScreen> {
   final List<String> customInfluenceTags = [];
   String _analysisRange = 'Bulanan';
   String _statisticsRange = 'Mingguan';
+  String reminderTime = '20:00';
   String appVersion = '';
   String buildNumber = '';
   @override
   void initState() {
     super.initState();
     userName = widget.userName;
+    loadReminderTime();
 
     _loadAppInfo();
   }
@@ -52,6 +55,7 @@ class _HomeScreenState extends State<HomeScreen> {
         userName: userName,
         currentMood: currentMood,
         energyLevel: energyLevel,
+        reminderTime: reminderTime,
         selectedInfluences: selectedInfluences,
         customInfluenceTags: customInfluenceTags,
           onAddCustomInfluence: (tag) {
@@ -69,6 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
             _openMoodDetail(currentMood?.definition ?? moodDefinitions[1]),
         onStreakTap: () => _showStreakDialog(context),
         onReflectionTap: _showReflectionSheet,
+        onReminderTap: _showReminderSheet,
       ),
       CalendarScreen(
         moodHistory: moodHistory,
@@ -1223,12 +1228,32 @@ void _openContactSupport() {
     );
   }
 
-  void _showReminderSheet() {
-    showTimePicker(
-      context: context,
-      initialTime: const TimeOfDay(hour: 20, minute: 0),
-    );
-  }
+  Future<void> _showReminderSheet() async {
+
+  final selectedTime = await showTimePicker(
+    context: context,
+    initialTime: const TimeOfDay(hour: 20, minute: 0),
+  );
+
+  if (selectedTime == null) return;
+
+  final formattedTime =
+      '${selectedTime.hour}:${selectedTime.minute.toString().padLeft(2, '0')}';
+
+  setState(() {
+
+    reminderTime = formattedTime;
+
+  });
+
+  final prefs =
+      await SharedPreferences.getInstance();
+
+  await prefs.setString(
+    'reminder_time',
+    formattedTime,
+  );
+}
 
   void _showSimpleDialog(String title, String content) {
     showDialog<void>(
@@ -1338,6 +1363,19 @@ void _openContactSupport() {
       buildNumber = packageInfo.buildNumber;
     });
   }
+
+  Future<void> loadReminderTime() async {
+
+  final prefs =
+      await SharedPreferences.getInstance();
+
+  setState(() {
+
+    reminderTime =
+        prefs.getString('reminder_time') ?? '20:00';
+
+  });
+}
 
   void _showTestHistory() {
     if (testHistory.isEmpty) {

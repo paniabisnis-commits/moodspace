@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 import 'mood_decor.dart';
 import 'mood_model.dart';
 
@@ -235,27 +235,66 @@ class _MoodDetailScreenState extends State<MoodDetailScreen> {
                           borderRadius: BorderRadius.circular(18),
                         ),
                       ),
-                      onPressed: () {
-                        if (selectedFeeling == null) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Pilih detail perasaan dulu ya.'),
+                      onPressed: () async {
+
+                          final navigator = Navigator.of(context);
+                          final messenger = ScaffoldMessenger.of(context);
+
+                          if (selectedFeeling == null) {
+                            messenger.showSnackBar(
+                              const SnackBar(
+                                content: Text('Pilih detail perasaan dulu ya.'),
+                              ),
+                            );
+                            return;
+                          }
+
+                          final prefs =
+                              await SharedPreferences.getInstance();
+
+                          await prefs.setString(
+                            'last_mood',
+                            widget.definition.label,
+                          );
+
+                          await prefs.setString(
+                            'last_feeling',
+                            selectedFeeling!,
+                          );
+
+                          await prefs.setString(
+                            'last_note',
+                            noteController.text.trim(),
+                          );
+
+                          await prefs.setString(
+                            'last_energy',
+                            selectedEnergy,
+                          );
+
+                          await prefs.setStringList(
+                            'last_activities',
+                            selectedActivities.toList(),
+                          );
+
+                          await prefs.setString(
+                            'last_mood_date',
+                            DateTime.now().toIso8601String(),
+                          );
+
+                          if (!mounted) return;
+
+                          navigator.pop(
+                            MoodModel(
+                              date: DateTime.now(),
+                              mood: widget.definition.label,
+                              feeling: selectedFeeling!,
+                              note: noteController.text.trim(),
+                              energy: selectedEnergy,
+                              activities: selectedActivities.toList(),
                             ),
                           );
-                          return;
-                        }
-
-                        Navigator.of(context).pop(
-                          MoodModel(
-                            date: DateTime.now(),
-                            mood: widget.definition.label,
-                            feeling: selectedFeeling!,
-                            note: noteController.text.trim(),
-                            energy: selectedEnergy,
-                            activities: selectedActivities.toList(),
-                          ),
-                        );
-                      },
+                        },
                       child: const Text('Simpan Mood'),
                     ),
                   ),

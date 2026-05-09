@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'commitment_screen.dart';
 import 'mood_decor.dart';
 import 'mood_model.dart';

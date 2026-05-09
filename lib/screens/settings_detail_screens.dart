@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 import 'mood_decor.dart';
 import 'mood_model.dart';
 
@@ -152,12 +152,32 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
-              onPressed: () => Navigator.of(context).pop(
-                ProfileSettingsResult(
-                  userName: _nameController.text.trim(),
-                  avatarIndex: selectedAvatar,
-                ),
-              ),
+              onPressed: () async {
+
+                final navigator = Navigator.of(context);
+
+                final prefs =
+                    await SharedPreferences.getInstance();
+
+                await prefs.setString(
+                  'user_name',
+                  _nameController.text.trim(),
+                );
+
+                await prefs.setInt(
+                  'avatar_index',
+                  selectedAvatar,
+                );
+
+                if (!mounted) return;
+
+                navigator.pop(
+    ProfileSettingsResult(
+      userName: _nameController.text.trim(),
+      avatarIndex: selectedAvatar,
+    ),
+  );
+},
               child: const Text('Simpan Perubahan'),
             ),
           ),
@@ -177,9 +197,36 @@ class NotificationSettingsScreen extends StatefulWidget {
 
 class _NotificationSettingsScreenState
     extends State<NotificationSettingsScreen> {
+    @override
+      void initState() {
+        super.initState();
+        loadSettings();
+    }
   bool dailyReminder = true;
   bool moodInsight = true;
   bool weeklySummary = false;
+
+  Future<void> loadSettings() async {
+
+  final prefs =
+      await SharedPreferences.getInstance();
+
+  if (!mounted) return;
+
+  setState(() {
+
+    dailyReminder =
+        prefs.getBool('daily_reminder') ?? true;
+
+    moodInsight =
+        prefs.getBool('mood_insight') ?? true;
+
+    weeklySummary =
+        prefs.getBool('weekly_summary') ?? false;
+
+  });
+
+}
 
   @override
   Widget build(BuildContext context) {
@@ -195,21 +242,54 @@ class _NotificationSettingsScreenState
             title: 'Pengingat Harian',
             subtitle: 'Bantu kamu check-in mood setiap hari.',
             value: dailyReminder,
-            onChanged: (value) => setState(() => dailyReminder = value),
+            onChanged: (value) async {
+
+                setState(() => dailyReminder = value);
+
+                final prefs =
+                    await SharedPreferences.getInstance();
+
+                await prefs.setBool(
+                  'daily_reminder',
+                  value,
+                );
+              },
           ),
           const SizedBox(height: 12),
           _switchCard(
             title: 'Insight Mood',
             subtitle: 'Dapatkan notifikasi pola atau refleksi otomatis.',
             value: moodInsight,
-            onChanged: (value) => setState(() => moodInsight = value),
+            onChanged: (value) async {
+
+                setState(() => moodInsight = value);
+
+                final prefs =
+                    await SharedPreferences.getInstance();
+
+                await prefs.setBool(
+                  'mood_insight',
+                  value,
+                );
+              },
           ),
           const SizedBox(height: 12),
           _switchCard(
             title: 'Ringkasan Mingguan',
             subtitle: 'Terima rangkuman tren emosimu tiap minggu.',
             value: weeklySummary,
-            onChanged: (value) => setState(() => weeklySummary = value),
+            onChanged: (value) async {
+
+              setState(() => weeklySummary = value);
+
+              final prefs =
+                  await SharedPreferences.getInstance();
+
+              await prefs.setBool(
+                'weekly_summary',
+                value,
+              );
+            },
           ),
         ],
       ),
@@ -449,27 +529,72 @@ class _SecuritySetupScreenState extends State<SecuritySetupScreen> {
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
-              onPressed: () {
-                if (widget.type == 'PIN' &&
-                    _controller.text.trim().length < 4) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('PIN minimal 4 digit.')),
-                  );
-                  return;
-                }
-                if (widget.type == 'Pola' && selectedDots.length < 4) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Pola minimal terdiri dari 4 titik.'),
-                    ),
-                  );
-                  return;
-                }
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('${widget.type} berhasil disimpan.')),
-                );
-                Navigator.of(context).pop();
-              },
+              onPressed: () async {
+
+  final navigator = Navigator.of(context);
+  final messenger = ScaffoldMessenger.of(context);
+
+  if (widget.type == 'PIN' &&
+      _controller.text.trim().length < 4) {
+
+    messenger.showSnackBar(
+      const SnackBar(
+        content: Text('PIN minimal 4 digit.'),
+      ),
+    );
+
+    return;
+  }
+
+  if (widget.type == 'Pola' &&
+      selectedDots.length < 4) {
+
+    messenger.showSnackBar(
+      const SnackBar(
+        content: Text(
+          'Pola minimal terdiri dari 4 titik.',
+        ),
+      ),
+    );
+
+    return;
+  }
+
+  final prefs =
+      await SharedPreferences.getInstance();
+
+  if (widget.type == 'PIN') {
+
+    await prefs.setString(
+      'security_pin',
+      _controller.text,
+    );
+  }
+
+  if (widget.type == 'Pola') {
+
+  await prefs.setString(
+    'security_pattern',
+    selectedDots.join('-'),
+  );
+
+}
+
+  if (!mounted) return;
+
+  messenger.showSnackBar(
+    SnackBar(
+      content: Text(
+        '${widget.type} berhasil disimpan.',
+      ),
+    ),
+  );
+
+  navigator.pop();
+
+},
+
+
               child: const Text('Simpan'),
             ),
           ),

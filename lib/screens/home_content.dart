@@ -9,6 +9,7 @@ class HomeContent extends StatefulWidget {
     required this.userName,
     required this.currentMood,
     required this.energyLevel,
+    required this.reminderTime,
     required this.selectedInfluences,
     required this.onProfileTap,
     required this.onMoodTap,
@@ -19,11 +20,13 @@ class HomeContent extends StatefulWidget {
     required this.onReflectionTap,
     required this.customInfluenceTags,
     required this.onAddCustomInfluence,
+    required this.onReminderTap,
   });
 
   final String userName;
   final MoodModel? currentMood;
   final String energyLevel;
+  final String reminderTime;
   final Set<String> selectedInfluences;
   final VoidCallback onProfileTap;
   final ValueChanged<MoodDefinition> onMoodTap;
@@ -34,6 +37,7 @@ class HomeContent extends StatefulWidget {
   final VoidCallback onReflectionTap;
   final List<String> customInfluenceTags;
   final ValueChanged<String> onAddCustomInfluence;
+  final VoidCallback onReminderTap;
 
 
   @override
@@ -397,6 +401,97 @@ class _HomeContentState extends State<HomeContent> {
                       onTap: widget.onStreakTap,
                       actionLabel: 'Lihat Riwayat',
                     ),
+
+                    const SizedBox(height: 14),
+
+                        Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.all(18),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(24),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withValues(alpha: 0.05),
+                                  blurRadius: 10,
+                                  offset: const Offset(0, 4),
+                                ),
+                              ],
+                            ),
+                            child: Row(
+                              children: [
+                                Container(
+                                  width: 52,
+                                  height: 52,
+                                  decoration: BoxDecoration(
+                                    color: appPrimary.withValues(alpha: 0.12),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: const Icon(
+                                    Icons.schedule_rounded,
+                                    color: appPrimary,
+                                  ),
+                                ),
+
+                                const SizedBox(width: 14),
+
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      const Text(
+                                        'Pengingat Mood',
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                          color: Color(0xFF33406B),
+                                        ),
+                                      ),
+
+                                      const SizedBox(height: 6),
+
+                                      Text(
+                                        'Pengingat harian pukul ${widget.reminderTime}',
+                                        style: const TextStyle(
+                                          fontSize: 14,
+                                          color: Color(0xFF697391),
+                                          height: 1.4,
+                                        ),
+                                      ),
+
+                                      const SizedBox(height: 10),
+
+                                      InkWell(
+                                        onTap: widget.onReminderTap,
+                                        borderRadius: BorderRadius.circular(12),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: const [
+                                            Flexible(
+                                              child: Text(
+                                                'Lihat Waktu Pengingat',
+                                                overflow: TextOverflow.ellipsis,
+                                                style:  TextStyle(
+                                                  fontSize: 14,
+                                                  color: Color.fromARGB(255, 0, 0, 0),
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                              ),
+                                            ),
+                                            SizedBox(width: 4),
+                                            Icon(
+                                              Icons.arrow_forward_rounded, color: Color.fromARGB(255, 0, 0, 0),
+                                              size: 18,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                   ],
                 ),
               ),
@@ -562,7 +657,7 @@ class _ActionCard extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(width: 4),
-                      const Icon(Icons.arrow_forward_rounded, size: 18),
+                      const Icon(Icons.arrow_forward_rounded, size: 18,),
                     ],
                   ),
                 ],
