@@ -987,6 +987,13 @@ class _HomeScreenState extends State<HomeScreen> {
                           _openExportData,
                         ),
 
+                        buildSettingsCard(
+                          'Reset Data',
+                          'Hapus semua data yang tersimpan di perangkat',
+                          Icons.restore_from_trash_rounded,
+                          _showResetDataDialog,
+                        ),
+
                         const SizedBox(height: 10),
 
                         buildSectionTitle('Dukungan Emosional'),
@@ -1479,16 +1486,70 @@ void _openContactSupport() {
 
   Future<void> loadReminderTime() async {
 
-  final prefs =
-      await SharedPreferences.getInstance();
+    final prefs =
+        await SharedPreferences.getInstance();
 
-  setState(() {
+    setState(() {
 
-    reminderTime =
-        prefs.getString('reminder_time') ?? '20:00';
+      reminderTime =
+          prefs.getString('reminder_time') ?? '20:00';
 
-  });
-}
+    });
+  }
+
+  Future<void> _showResetDataDialog() async {
+      final confirm = await showDialog<bool>(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Reset Data'),
+          content: const Text(
+            'Semua data seperti profil, mood, catatan, dan streak akan dihapus secara permanen.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text('Batal'),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: const Text('Hapus'),
+            ),
+          ],
+        ),
+      );
+
+      if (confirm == true) {
+        await _resetAllData();
+      }
+    }
+
+    Future<void> _resetAllData() async {
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.clear();
+
+        if (!mounted) return;
+
+        setState(() {
+          userName = 'Pengguna';
+          selectedAvatarIndex = 0;
+
+          currentMood = null;
+          energyLevel = 'Sedang';
+
+          reminderTime = '20:00';
+
+          moodStreak = 0;
+
+          selectedInfluences.clear();
+          customInfluenceTags.clear();
+        });
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Semua data berhasil dihapus.'),
+          ),
+        );
+      }
 
   void _showTestHistory() {
     if (testHistory.isEmpty) {
