@@ -30,6 +30,7 @@ class _HomeScreenState extends State<HomeScreen> {
   String energyLevel = 'Sedang';
   String userName = '';
   int selectedAvatarIndex = 0;
+  int moodStreak = 1;
   final List<MoodModel> moodHistory = [];
   final List<result_model.TestResultModel> testHistory = [];
   final Set<String> selectedInfluences = {};
@@ -71,7 +72,17 @@ class _HomeScreenState extends State<HomeScreen> {
         onEnergyTap: _showEnergySheet,
         onLogMoodTap: () =>
             _openMoodDetail(currentMood?.definition ?? moodDefinitions[1]),
-        onStreakTap: () => _showStreakDialog(context),
+        onStreakTap: () {
+          final bool hasMood = currentMood != null;
+          final int streakCount = moodStreak;
+          showDialog(
+            context: context,
+            builder: (_) => _StreakDialog(
+              hasMood: hasMood,
+              streakCount: streakCount,
+            ),
+          );
+        },
         onReflectionTap: _showReflectionSheet,
         onReminderTap: _showReminderSheet,
       ),
@@ -323,9 +334,19 @@ class _HomeScreenState extends State<HomeScreen> {
       barrierColor: Colors.black.withValues(alpha: 0.4),
       transitionDuration: const Duration(milliseconds: 450),
       pageBuilder: (context, animation, secondaryAnimation) {
-        return Center(child: _StreakDialog(hasMood: currentMood != null));
+        return Center(
+          child: _StreakDialog(
+            hasMood: currentMood != null,
+            streakCount: moodStreak,
+          ),
+        );
       },
-      transitionBuilder: (context, animation, secondaryAnimation, child) {
+      transitionBuilder: (
+        context,
+        animation,
+        secondaryAnimation,
+        child,
+      ) {
         final curved = CurvedAnimation(
           parent: animation,
           curve: Curves.easeOutCubic,
@@ -334,7 +355,10 @@ class _HomeScreenState extends State<HomeScreen> {
         return FadeTransition(
           opacity: curved,
           child: ScaleTransition(
-            scale: Tween<double>(begin: 0.85, end: 1.0).animate(curved),
+            scale: Tween<double>(
+              begin: 0.85,
+              end: 1.0,
+            ).animate(curved),
             child: child,
           ),
         );
@@ -778,51 +802,74 @@ class _HomeScreenState extends State<HomeScreen> {
         }
 
         Widget buildSettingsCard(
-          String title,
-          IconData icon,
-          VoidCallback onTap,
-        ) {
-          return Padding(
-            padding: const EdgeInsets.only(bottom: 12),
-            child: InkWell(
-              borderRadius: BorderRadius.circular(24),
-              onTap: onTap,
-              child: SectionAccentCard(
-                child: Row(
-                  children: [
-                    Container(
-                      width: 42,
-                      height: 42,
-                      decoration: BoxDecoration(
-                        color: appSecondary.withValues(alpha: 0.14),
-                        shape: BoxShape.circle,
-                      ),
-                      child: Icon(icon, color: appPrimary),
-                    ),
-
-                    const SizedBox(width: 14),
-
-                    Expanded(
-                      child: Text(
-                        title,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
+            String title,
+            String description,
+            IconData icon,
+            VoidCallback onTap,
+          ) {
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: InkWell(
+                borderRadius: BorderRadius.circular(24),
+                onTap: onTap,
+                child: SectionAccentCard(
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 52,
+                        height: 52,
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFE6EAFA),
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: Icon(
+                          icon,
+                          color: appPrimary,
+                          size: 26,
                         ),
                       ),
-                    ),
 
-                    const Icon(
-                      Icons.arrow_forward_ios_rounded,
-                      size: 16,
-                      color: Color(0xFF9CA4C0),
-                    ),
-                  ],
+                      const SizedBox(width: 14),
+
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              title,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+
+                            const SizedBox(height: 3),
+
+                            Text(
+                              description,
+                              style: const TextStyle(
+                                fontSize: 13,
+                                color: Color(0xFF6A7597),
+                                height: 1.4,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      const SizedBox(width: 8),
+
+                      const Icon(
+                        Icons.arrow_forward_ios_rounded,
+                        size: 16,
+                        color: Color(0xFF9CA4C0),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          );
-        }
+            );
+          }
 
         return SafeArea(
           child: MoodDecorBackground(
@@ -910,12 +957,14 @@ class _HomeScreenState extends State<HomeScreen> {
 
                         buildSettingsCard(
                           'Notifikasi',
+                          'Atur pemberitahuan dari aplikasi',
                           Icons.notifications_none_rounded,
                           _openNotificationSettings,
                         ),
 
                         buildSettingsCard(
                           'Waktu Pengingat',
+                          'Tentukan jam pengingat harian',
                           Icons.schedule_rounded,
                           _showReminderSheet,
                         ),
@@ -926,12 +975,14 @@ class _HomeScreenState extends State<HomeScreen> {
 
                         buildSettingsCard(
                           'Keamanan & Privasi',
+                          'Kelola keamanan akun dan data pribadi',
                           Icons.lock_outline_rounded,
                           _openSecuritySettings,
                         ),
 
                         buildSettingsCard(
                           'Ekspor Data',
+                          'Unduh riwayat mood dalam format file',
                           Icons.file_download_outlined,
                           _openExportData,
                         ),
@@ -942,6 +993,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                         buildSettingsCard(
                           'MoodSpace Assistant',
+                          'Tempat bercerita dan refleksi diri',
                           Icons.psychology_rounded,
                           _openMentalHealthChatbot,
                         ),
@@ -952,18 +1004,21 @@ class _HomeScreenState extends State<HomeScreen> {
 
                         buildSettingsCard(
                           'Tentang Aplikasi',
+                          'Informasi fitur dan tujuan aplikasi',
                           Icons.info_outline_rounded,
                           _openAboutApp,
                         ),
 
                         buildSettingsCard(
                           'Kebijakan Privasi',
+                          'Pelajari cara data kamu dilindungi',
                           Icons.privacy_tip_outlined,
                           _openPrivacyPolicy,
                         ),
 
                         buildSettingsCard(
                           'Hubungi Kami',
+                          'Kirim pertanyaan atau masukan',
                           Icons.support_agent_rounded,
                           _openContactSupport,
                         ),
@@ -1545,8 +1600,13 @@ class _NavItem {
 }
 
 class _StreakDialog extends StatefulWidget {
+  const _StreakDialog({
+    required this.hasMood,
+    required this.streakCount,
+  });
+
   final bool hasMood;
-  const _StreakDialog({required this.hasMood});
+  final int streakCount;
 
   @override
   State<_StreakDialog> createState() => _StreakDialogState();
@@ -1648,18 +1708,27 @@ class _StreakDialogState extends State<_StreakDialog> {
 
                     Text(
                       widget.hasMood
-                          ? "Kamu sudah berhasil mencatat 1 mood hari ini"
-                          : "Kamu belum mencatat mood hari ini",
+                          ? 'Kamu sudah berhasil mencatat ${widget.streakCount} hari berturut-turut'
+                          : 'Kamu belum mencatat mood hari ini',
                       textAlign: TextAlign.center,
-                      style: const TextStyle(fontSize: 14, color: Colors.white),
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: Colors.white,
+                      ),
                     ),
 
                     const SizedBox(height: 8),
 
                     Text(
                       widget.hasMood
-                          ? "Konsistensi kecil hari ini adalah langkah besar untuk dirimu"
-                          : "Yuk mulai catat mood pertamamu sekarang",
+                          ? (widget.streakCount == 1
+                              ? 'Konsistensi kecil hari ini adalah langkah besar untuk dirimu'
+                              : widget.streakCount < 7
+                                  ? 'Luar biasa! Kamu sedang membangun kebiasaan positif.'
+                                  : widget.streakCount < 30
+                                      ? 'Hebat! Kamu sudah menjaga kesehatan emosimu dengan sangat baik.'
+                                      : 'Fantastis! Kebiasaan refleksi dirimu benar-benar menginspirasi.')
+                          : 'Yuk mulai catat mood pertamamu sekarang',
                       textAlign: TextAlign.center,
                       style: const TextStyle(
                         fontSize: 12,

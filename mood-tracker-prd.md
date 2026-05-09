@@ -105,7 +105,7 @@ Top to bottom:
 7. Optional recent summary
 
 ### UI Elements
-- Greeting text: `Halo, Alya`
+- Greeting text: `Halo, Nama`
 - Subtext: `Bagaimana perasaanmu hari ini?`
 - Mood selector:
   - opsi 5 emoji besar, atau

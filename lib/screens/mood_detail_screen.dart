@@ -22,7 +22,7 @@ class _MoodDetailScreenState extends State<MoodDetailScreen> {
   String selectedEnergy = 'Sedang';
   final Set<String> selectedActivities = <String>{};
   final TextEditingController noteController = TextEditingController();
-
+  final List<String> customActivities = [];
   @override
   void initState() {
     super.initState();
@@ -172,25 +172,82 @@ class _MoodDetailScreenState extends State<MoodDetailScreen> {
                           Wrap(
                             spacing: 10,
                             runSpacing: 10,
-                            children: activityOptions.map((activity) {
-                              final isSelected = selectedActivities.contains(
-                                activity,
-                              );
-                              return _ColorChip(
-                                label: activity,
-                                selected: isSelected,
+                            children: [
+                              ...[...activityOptions, ...customActivities].map((activity) {
+                                final isSelected = selectedActivities.contains(activity);
+
+                                return _ColorChip(
+                                  label: activity,
+                                  selected: isSelected,
+                                  color: widget.definition.color,
+                                  onTap: () {
+                                    setState(() {
+                                      if (isSelected) {
+                                        selectedActivities.remove(activity);
+                                      } else {
+                                        selectedActivities.add(activity);
+                                      }
+                                    });
+                                  },
+                                );
+                              }),
+
+                              _ColorChip(
+                                label: 'Lainnya',
+                                selected: false,
                                 color: widget.definition.color,
-                                onTap: () {
-                                  setState(() {
-                                    if (isSelected) {
-                                      selectedActivities.remove(activity);
-                                    } else {
-                                      selectedActivities.add(activity);
-                                    }
-                                  });
+                                icon: Icons.add_rounded,
+                                onTap: () async {
+                                  final TextEditingController otherController =
+                                      TextEditingController();
+
+                                  final result = await showDialog<String>(
+                                    context: context,
+                                    builder: (context) {
+                                      return AlertDialog(
+                                        title: const Text('Aktivitas Lainnya'),
+                                        content: TextField(
+                                          controller: otherController,
+                                          autofocus: true,
+                                          decoration: const InputDecoration(
+                                            hintText: 'Contoh: Membaca buku',
+                                          ),
+                                        ),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () => Navigator.pop(context),
+                                            child: const Text('Batal'),
+                                          ),
+                                          ElevatedButton(
+                                            onPressed: () {
+                                              final text = otherController.text.trim();
+                                              if (text.isNotEmpty) {
+                                                Navigator.pop(context, text);
+                                              }
+                                            },
+                                            child: const Text('Simpan'),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+
+                                  otherController.dispose();
+
+                                  if (result != null && result.isNotEmpty) {
+                                    setState(() {
+                                      // Tambahkan ke daftar custom jika belum ada
+                                      if (!customActivities.contains(result)) {
+                                        customActivities.add(result);
+                                      }
+
+                                      // Langsung otomatis terpilih
+                                      selectedActivities.add(result);
+                                    });
+                                  }
                                 },
-                              );
-                            }).toList(),
+                              ),
+                            ],
                           ),
                           const SizedBox(height: 22),
                           Text(

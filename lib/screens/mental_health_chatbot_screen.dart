@@ -235,7 +235,7 @@ class _MentalHealthChatbotScreenState
                                 children: [
 
                                   Text(
-                                    'Mental Health Chatbot',
+                                    'MoodSpace Assistant',
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontSize: 17,
