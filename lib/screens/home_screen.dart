@@ -758,149 +758,142 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildSettingsPage() {
-    return SafeArea(
-      child: MoodDecorBackground(
-        accentColor: appPrimary,
-        child: CustomScrollView(
-          slivers: [
-            SliverPersistentHeader(
-              pinned: true,
-              delegate: SliverPinnedHeader(
-                height: 155,
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 18, 20, 12),
-                  child: MoodHeader(
-                    title: 'Preferensi Kamu',
-                    subtitle: 'Atur pengalamanmu',
-                    icon: Icons.settings_rounded,
-                    accentColor: appPrimary,
-                  ),
-                ),
+    Widget _buildSettingsPage() {
+        Widget buildSectionTitle(String title) {
+          return Padding(
+            padding: const EdgeInsets.only(
+              left: 4,
+              bottom: 12,
+              top: 8,
+            ),
+            child: Text(
+              title,
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF33406B),
               ),
             ),
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
-                child: Column(
+          );
+        }
+
+        Widget buildSettingsCard(
+          String title,
+          IconData icon,
+          VoidCallback onTap,
+        ) {
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 12),
+            child: InkWell(
+              borderRadius: BorderRadius.circular(24),
+              onTap: onTap,
+              child: SectionAccentCard(
+                child: Row(
                   children: [
-                    InkWell(
-                      borderRadius: BorderRadius.circular(24),
-                      onTap: _openProfileDetail,
-                      child: SectionAccentCard(
-                        child: Row(
-                          children: [
-                            CircleAvatar(
-                              radius: 26,
-                              backgroundColor: const Color(0xFFE6EAFA),
-                              child: Icon(
-                                profileAvatarOptions[selectedAvatarIndex],
-                                color: appPrimary,
-                              ),
-                            ),
-                            const SizedBox(width: 14),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    userName,
-                                    style: const TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  const Text(
-                                    'Lihat profil dan pengaturan akun',
-                                    style: TextStyle(color: Color(0xFF6A7597)),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const Icon(
-                              Icons.arrow_forward_ios_rounded,
-                              size: 16,
-                              color: Color(0xFF9CA4C0),
-                            ),
-                          ],
+                    Container(
+                      width: 42,
+                      height: 42,
+                      decoration: BoxDecoration(
+                        color: appSecondary.withValues(alpha: 0.14),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(icon, color: appPrimary),
+                    ),
+
+                    const SizedBox(width: 14),
+
+                    Expanded(
+                      child: Text(
+                        title,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                     ),
-                    const SizedBox(height: 14),
-                    ...[
-                      (
-                        'Notifikasi',
-                        Icons.notifications_none_rounded,
-                        _openNotificationSettings,
-                      ),
-                      (
-                        'Waktu Pengingat',
-                        Icons.schedule_rounded,
-                        _showReminderSheet,
-                      ),
-                      (
-                        'Keamanan & Privasi',
-                        Icons.lock_outline_rounded,
-                        _openSecuritySettings,
-                      ),
-                      (
-                        'Ekspor Data',
-                        Icons.file_download_outlined,
-                        _openExportData,
-                      ),
 
-                      (
-                        'MoodSpace Assistant',
-                        Icons.psychology_rounded,
-                        _openMentalHealthChatbot,
-                      ),
+                    const Icon(
+                      Icons.arrow_forward_ios_rounded,
+                      size: 16,
+                      color: Color(0xFF9CA4C0),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        }
 
-                      (
-                        'Tentang Aplikasi',
-                        Icons.info_outline_rounded,
-                        _openAboutApp,
+        return SafeArea(
+          child: MoodDecorBackground(
+            accentColor: appPrimary,
+            child: CustomScrollView(
+              slivers: [
+                SliverPersistentHeader(
+                  pinned: true,
+                  delegate: SliverPinnedHeader(
+                    height: 155,
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(20, 18, 20, 12),
+                      child: MoodHeader(
+                        title: 'Pengaturan',
+                        subtitle: 'Kelola pengalaman MoodSpace-mu',
+                        icon: Icons.settings_rounded,
+                        accentColor: appPrimary,
                       ),
+                    ),
+                  ),
+                ),
 
-                      (
-                        'Kebijakan Privasi',
-                        Icons.privacy_tip_outlined,
-                        _openPrivacyPolicy,
-                      ),
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        buildSectionTitle('Akun'),
 
-                      (
-                        'Hubungi Kami',
-                        Icons.support_agent_rounded,
-                        _openContactSupport,
-                      ),
-                    ]
-                    .map((item) {
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 12),
-                        child: InkWell(
+                        InkWell(
                           borderRadius: BorderRadius.circular(24),
-                          onTap: item.$3,
+                          onTap: _openProfileDetail,
                           child: SectionAccentCard(
                             child: Row(
                               children: [
-                                Container(
-                                  width: 42,
-                                  height: 42,
-                                  decoration: BoxDecoration(
-                                    color: appSecondary.withValues(alpha: 0.14),
-                                    shape: BoxShape.circle,
+                                CircleAvatar(
+                                  radius: 26,
+                                  backgroundColor: const Color(0xFFE6EAFA),
+                                  child: Icon(
+                                    profileAvatarOptions[selectedAvatarIndex],
+                                    color: appPrimary,
                                   ),
-                                  child: Icon(item.$2, color: appPrimary),
                                 ),
+
                                 const SizedBox(width: 14),
+
                                 Expanded(
-                                  child: Text(
-                                    item.$1,
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
-                                    ),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        userName,
+                                        style: const TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+
+                                      const SizedBox(height: 2),
+
+                                      const Text(
+                                        'Lihat profil dan pengaturan akun',
+                                        style: TextStyle(
+                                          color: Color(0xFF6A7597),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
+
                                 const Icon(
                                   Icons.arrow_forward_ios_rounded,
                                   size: 16,
@@ -910,48 +903,113 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ),
                         ),
-                      );
-                    }),
-                    Divider(
-  color: Colors.grey.withValues(alpha: 0.15),
-),
 
-const SizedBox(height: 18),
+                        const SizedBox(height: 18),
 
-Center(
-  child: Column(
-    children: [
-      Text(
-        'MoodSpace',
-        style: TextStyle(
-          fontSize: 15,
-          fontWeight: FontWeight.w700,
-          color: appPrimary.withValues(alpha: 0.9),
-        ),
-      ),
+                        buildSectionTitle('Notifikasi & Pengingat '),
 
-      const SizedBox(height: 6),
+                        buildSettingsCard(
+                          'Notifikasi',
+                          Icons.notifications_none_rounded,
+                          _openNotificationSettings,
+                        ),
 
-      Text(
-        'Version $appVersion ($buildNumber)',
-        style: const TextStyle(
-          fontSize: 12.5,
-          color: Color(0xFF9AA3C0),
-          fontWeight: FontWeight.w500,
-        ),
-      ),
-    ],
-  ),
-),
-                  ],
+                        buildSettingsCard(
+                          'Waktu Pengingat',
+                          Icons.schedule_rounded,
+                          _showReminderSheet,
+                        ),
+
+                        const SizedBox(height: 10),
+
+                        buildSectionTitle('Privasi & Data'),
+
+                        buildSettingsCard(
+                          'Keamanan & Privasi',
+                          Icons.lock_outline_rounded,
+                          _openSecuritySettings,
+                        ),
+
+                        buildSettingsCard(
+                          'Ekspor Data',
+                          Icons.file_download_outlined,
+                          _openExportData,
+                        ),
+
+                        const SizedBox(height: 10),
+
+                        buildSectionTitle('Dukungan Emosional'),
+
+                        buildSettingsCard(
+                          'MoodSpace Assistant',
+                          Icons.psychology_rounded,
+                          _openMentalHealthChatbot,
+                        ),
+
+                        const SizedBox(height: 10),
+
+                        buildSectionTitle('Informasi'),
+
+                        buildSettingsCard(
+                          'Tentang Aplikasi',
+                          Icons.info_outline_rounded,
+                          _openAboutApp,
+                        ),
+
+                        buildSettingsCard(
+                          'Kebijakan Privasi',
+                          Icons.privacy_tip_outlined,
+                          _openPrivacyPolicy,
+                        ),
+
+                        buildSettingsCard(
+                          'Hubungi Kami',
+                          Icons.support_agent_rounded,
+                          _openContactSupport,
+                        ),
+
+                        const SizedBox(height: 8),
+
+                        Divider(
+                          color: Colors.grey.withValues(alpha: 0.15),
+                        ),
+
+                        const SizedBox(height: 18),
+
+                        Center(
+                          child: Column(
+                            children: [
+                              Text(
+                                'MoodSpace',
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w700,
+                                  color: appPrimary.withValues(alpha: 0.9),
+                                ),
+                              ),
+
+                              const SizedBox(height: 6),
+
+                              Text(
+                                'Version $appVersion ($buildNumber)',
+                                style: const TextStyle(
+                                  fontSize: 12.5,
+                                  color: Color(0xFF9AA3C0),
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-              ),
+              ],
             ),
-          ],
-        ),
-      ),
-    );
-  }
+          ),
+        );
+      }
 
   Future<void> _openProfileDetail() async {
     final updated = await Navigator.of(context).push<ProfileSettingsResult>(
