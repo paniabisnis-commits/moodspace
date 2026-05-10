@@ -1,49 +1,52 @@
-# Mood Tracker Product Requirement Document
+# Mood Space Product Requirement Document
 
 ## Document Purpose
-Dokumen ini merinci UI/UX Mood Tracker berdasarkan struktur aplikasi yang sudah ditetapkan dan tidak mengubah arsitektur navigasi.
+Dokumen ini merinci UI/UX Mood Space berdasarkan struktur aplikasi yang sudah ditetapkan dan tidak mengubah arsitektur navigasi.
 
 ## Fixed Navigation Architecture
 Bottom Navigation:
-1. Home
-2. Calendar
-3. Analysis
-4. Statistics
-5. Settings
+1. Beranda
+2. Kalender
+3. Analisis
+4. Statistik
+5. Pengaturan
 
 Additional Screen:
-- Log Mood
+- Detail Mood
 
 ## 1. Refined UX Flow
 
 ### Primary Flow
-1. User membuka `Home`
-2. User memilih mood cepat dari shortcut atau menekan CTA `Log Mood`
-3. User masuk ke `Log Mood`
+1. User membuka `Beranda`
+2. User memilih mood cepat dari shortcut atau menekan CTA `Catat Mood`
+3. User masuk ke `Detail Mood`
 4. User memilih mood, menambah notes opsional, dan activity tags
-5. User menekan `Save`
+5. User menekan `Simpan Mood`
 6. App menampilkan saved state yang hangat dan singkat
-7. Data langsung tercermin di `Calendar` dan `Statistics`
+7. Data langsung tercermin di `Kalender` dan `Statistik`
 
-### Calendar Flow
-1. User membuka `Calendar`
-2. User melihat monthly view dengan indikator mood harian
+### Kalender Flow
+1. User membuka `Kalender`
+2. User melihat tampilan bulanan dengan indikator mood harian
 3. User memilih tanggal
 4. Panel detail di bawah kalender menampilkan mood history tanggal tersebut
+5. User dapat merubah entri mood pada tanggal yang dipilih
 
-### Analysis Flow
-1. User membuka `Analysis`
-2. User melihat emotional breakdown
-3. User melihat relationship insights (`Hubungan`)
-4. User melihat personality trends (`Kepribadian`)
-5. User memahami insight singkat tanpa harus membaca chart yang rumit
+### Analisis Flow
+1. User membuka `Analisis`
+2. User melihat distribusi emosi
+3. User melihat pola hubungan antara aktivitas
+4. User melihat tes kepribadian
+5. User memahami beberapa kategori tes dan melakukan tes
+6. User melihat hasil skor tes yang telah dikerjakan
+7. User menyimpan hasil skor tes
 
-### Statistics Flow
-1. User membuka `Statistics`
+### Statistik Flow
+1. User membuka `Statistik`
 2. User melihat tren mingguan atau bulanan
 3. User melihat mood paling sering muncul
 4. User melihat dampak aktivitas terhadap mood
-5. User membaca summary insight singkat
+5. User membaca summary konsistensi check-in
 
 ### UX Principles for Flow
 - Maksimalkan check-in dalam kurang dari 15 detik.
@@ -62,7 +65,7 @@ Membangun koneksi emosional awal dan memberikan pengalaman onboarding yang perso
 1. User membuka aplikasi pertama kali
 2. User memasukkan nama panggilan
 3. User membaca komitmen self-care singkat
-4. User melanjutkan ke Home Screen
+4. User melanjutkan ke Beranda
 
 ### UI Elements
 - Greeting illustration/icon
@@ -82,50 +85,49 @@ Membangun koneksi emosional awal dan memberikan pengalaman onboarding yang perso
 - `PrimaryButton`
 - `SectionAccentCard`
 
-## 2.1 Home Screen
+## 2.1 Beranda
 
 ### Screen Goal
 Membantu user melakukan check-in mood secepat mungkin sambil memberi rasa tenang dan dukungan emosional.
 
 ### Content Blocks
 - Greeting header
-- Quick mood input
-- Quick tags
-- Motivational card
-- Primary CTA ke `Log Mood`
+- Quick mood selector
+- Influencing factors
+- Mood & Energy Summary
+- Mood Log Button
+- Mood Insights & Reflections
+- Mood Streak
+- Mood Reminder
 
 ### Suggested Layout
 Top to bottom:
 1. Safe area header
 2. Greeting + user name
-3. Mood quick input card
-4. Quick tags row/chips
-5. Motivational/supportive card
-6. Primary CTA button
-7. Optional recent summary
+3. Mood selector card
+4. Chips factor
+5. Card summary
+6. Main CTA button
+7. Card insight
 
 ### UI Elements
 - Greeting text: `Halo, Nama`
 - Subtext: `Bagaimana perasaanmu hari ini?`
 - Mood selector:
-  - opsi 5 emoji besar, atau
-  - slider dengan 5 anchor states
+  - opsi 5 emoji besar
 - Quick tags:
-  - `Energi rendah`
-  - `Fokus`
-  - `Stress`
+  - `Senang`
   - `Tenang`
-  - `Sosial`
-- Motivational card:
-  - judul pendek
-  - 1 kalimat suportif
+  - `Netral`
+  - `Sedih`
+  - `Marah`
 - CTA:
-  - `Catat Mood Hari Ini`
+  - `Catat Mood`
 
 ### UX Notes
-- Mood input harus tampil di fold pertama.
+- Mood input harus tampil di halaman pertama.
 - CTA utama harus mudah dijangkau ibu jari.
-- Jika user sudah log hari ini, ubah CTA menjadi `Perbarui Mood`.
+- Jika user sudah log hari ini, akan tampil history di Calender, Analisis, Statistik.
 
 ### Component Hierarchy
 - `HomeScreen`
@@ -137,7 +139,7 @@ Top to bottom:
 - `PrimaryActionButton`
 - `BottomNav`
 
-## 2.2 Calendar Screen
+## 2.2 Kalender
 
 ### Screen Goal
 Menyediakan tampilan riwayat mood yang mudah dipindai dan mudah dipahami secara visual.
@@ -189,15 +191,15 @@ Menyediakan tampilan riwayat mood yang mudah dipindai dan mudah dipahami secara 
 - `MoodHistoryList`
 - `BottomNav`
 
-## 2.3 Analysis Screen
+## 2.3 Analisis
 
 ### Screen Goal
 Memberikan insight emosional yang terasa personal, sederhana, dan suportif.
 
 ### Content Blocks
 - Emotional breakdown
-- Relationship insights (`Hubungan`)
-- Personality trends (`Kepribadian`)
+- Patterns found (`Hubungan`)
+- Personality analysis (`Kepribadian`)
 - Simple reflective insights
 
 ### Suggested Layout
@@ -210,11 +212,11 @@ Memberikan insight emosional yang terasa personal, sederhana, dan suportif.
 
 ### UI Elements
 - Emotional breakdown:
-  - label: `Senang`, `Sedih`, `Cemas`, `Tenang`, `Lelah`
-- `Hubungan` card:
+  - label: `Senang`, `Tenang`, `Netral`, `Sedih`, `Marah`
+- `Pola ditemukan` card:
   - contoh insight: `Mood kamu cenderung lebih stabil saat interaksi sosial meningkat.`
-- `Kepribadian` card:
-  - contoh insight: `Kamu tampak lebih nyaman saat rutinitas harian konsisten.`
+- `Analisis Kepribadian` card:
+  - contoh insight: `Lihat Kepribadian.`
 
 ### Chart Guidance
 - Maksimal 4-5 kategori per visual.
@@ -222,7 +224,7 @@ Memberikan insight emosional yang terasa personal, sederhana, dan suportif.
 - Hindari visual analitik yang terlalu teknis.
 
 ### UX Notes
-- Analysis harus terasa seperti insight, bukan diagnosis.
+- Analisis harus terasa seperti insight, bukan diagnosis.
 - Tambahkan satu line helper text: `Insight ini membantu kamu melihat pola, bukan menilai dirimu.`
 - Insight ditampilkan berdasarkan pola sederhana dari data mood pengguna.
 
@@ -240,7 +242,7 @@ MoodSpace bukan alat diagnosis medis atau psikologis, melainkan media refleksi d
 - `SupportiveFooterNote`
 - `BottomNav`
 
-## 2.4 Statistics Screen
+## 2.4 Statistik
 
 ### Screen Goal
 Menampilkan tren dan pola mood secara kuantitatif dengan cara yang tetap ringan.
@@ -249,7 +251,7 @@ Menampilkan tren dan pola mood secara kuantitatif dengan cara yang tetap ringan.
 - Mood trends
 - Most frequent mood
 - Activity impact on mood
-- Summary insights
+- Check-in consistency
 
 ### Suggested Layout
 1. Header title
@@ -257,23 +259,24 @@ Menampilkan tren dan pola mood secara kuantitatif dengan cara yang tetap ringan.
 3. Mood trend line chart
 4. Most frequent mood card
 5. Activity impact chart
-6. Summary insight card
+6. Check-in consistency card
 
 ### UI Elements
-- Toggle:
+- Toggle switch:
   - `Mingguan`
   - `Bulanan`
-- Line chart:
-  - 1 garis utama
-  - titik data halus
+- Mood summary card:
+  - Vertical rounded mood bars
+  - Tiap batang mewakili mood
 - Most frequent mood:
-  - mood icon
+  - Icon tren/statistik
   - label
-  - percentage/frequency
+  - line chart
 - Activity impact:
-  - bar chart horizontal
-  - contoh: `Olahraga`, `Belajar`, `Tidur cukup`, `Bersosialisasi`
-- Summary insight:
+  - Title 
+  - Deskripsi insight
+  - Button
+- Check-in consistency:
   - `Mood kamu paling stabil pada hari dengan energi tinggi dan tidur cukup.`
 
 ### UX Notes
@@ -290,7 +293,7 @@ Menampilkan tren dan pola mood secara kuantitatif dengan cara yang tetap ringan.
 - `SummaryInsightCard`
 - `BottomNav`
 
-## 2.5 Settings Screen
+## 2.5 Pengaturan
 
 ### Screen Goal
 Menyediakan pengaturan inti dengan tampilan sederhana dan bersih.
@@ -301,6 +304,8 @@ Menyediakan pengaturan inti dengan tampilan sederhana dan bersih.
 - Daily reminders
 - Privacy & security
 - Data export
+- Reset Data
+- MoodSpace Assistant
 - About the app
 - Privacy policy
 - Contact us
@@ -321,6 +326,7 @@ Menyediakan pengaturan inti dengan tampilan sederhana dan bersih.
   - `Pengingat Harian`
   - `Privasi & Keamanan`
   - `Export Data`
+  - `Reset Data`
   - `MoodSpace Assistant`
   - `Tentang Aplikasi`
   - `Kebijakan Privasi`
@@ -340,7 +346,7 @@ Menyediakan pengaturan inti dengan tampilan sederhana dan bersih.
 - `DestructiveActionRow`
 - `BottomNav`
 
-## 2.6 Log Mood Screen
+## 2.6 Detail Mood 
 
 ### Screen Goal
 Menjadi alur utama pencatatan mood yang cepat, jelas, dan nyaman secara emosional.
@@ -349,44 +355,56 @@ Menjadi alur utama pencatatan mood yang cepat, jelas, dan nyaman secara emosiona
 `Bagaimana perasaanmu hari ini?`
 
 ### Content Blocks
-- Question heading
-- Mood selector
-- Optional notes
-- Activity tags
-- Save button
+- Header dengan tombol kembali
+- Ilustrasi / ikon mood utama
+- Pilihan detail emosi
+- Pilihan tingkat energi
+- Pilihan aktivitas harian
+- Catatan harian opsional
+- Tombol simpan mood
 
 ### Suggested Layout
-1. Header dengan back button
-2. Prompt utama
-3. Mood selector besar
-4. Optional note field
-5. Activity tags chips
-6. Save button sticky di bawah jika perlu
+1. Top Navigation
+2. Mood Illustration
+3. Main Prompt
+4. Detail Emotion Chips
+5. Energy Selector
+6. Activity Tags
+7. Daily Notes
+8. Sticky Save Button
 
 ### UI Elements
-- Mood selector:
-  - 5 emoji state atau 5-point emotion scale
-- Optional journaling:
-  - placeholder: `Tulis sedikit tentang hari ini jika kamu mau`
+- Mood Detail Chips:
+  - Rounded full capsule
+  - Background
+  - Shadow soft/light
+  - Font semi-bold
+- Energy Selector:
+  - Segmented selection style
+  - Hanya satu pilihan aktif
+  - Menggunakan icon baterai pada tiap opsi
 - Activity tags:
-  - `Belajar`
-  - `Olahraga`
-  - `Kerja`
-  - `Istirahat`
-  - `Keluarga`
-  - `Teman`
-- Save button:
-  - `Simpan Mood`
+  - Wrap chips layout
+  - Multiple selection allowed
+  - Support custom activity melalui chip + Lainnya
+- Notes Field:
+  - Rounded large textarea
+  - Keyboard-safe spacing
+- Save Button:
+  - Rounded radius besar
+  - Sticky bottom spacing
 
 ### Interaction Rules
 - Mood wajib dipilih sebelum save aktif.
 - Notes bersifat opsional.
 - Multiple activity tags diperbolehkan.
-- Setelah save, tampilkan feedback singkat lalu kembali ke Home atau tetap dengan state sukses.
+- Setelah save, tampilkan feedback singkat lalu kembali ke Beranda atau tetap dengan state sukses.
 
 ### UX Notes
 - Screen ini harus sangat fokus, jangan beri distraksi.
 - Keyboard tidak boleh menutupi CTA saat user menulis notes.
+- Gunakan animasi halus saat chip dipilih
+- Semua elemen menggunakan rounded aesthetic konsisten dengan MoodSpace
 
 ### Component Hierarchy
 - `LogMoodScreen`
@@ -418,16 +436,10 @@ Menyediakan ruang percakapan suportif yang membantu pengguna melakukan refleksi 
 
 ### UI Elements
 - Greeting:
-  `Hai, aku siap menemanimu hari ini 🌼`
-  
-- Suggested prompts:
-  - `Aku merasa cemas`
-  - `Hari ini melelahkan`
-  - `Aku sulit fokus`
-  - `Aku ingin menenangkan diri`
+  `Hai, aku siap menemanimu hari ini`
 
 - Input placeholder:
-  `Ceritakan apa yang kamu rasakan...`
+  `Tulis perasaanmu...`
 
 ### UX Notes
 - Chatbot harus menggunakan bahasa suportif dan netral.
@@ -605,11 +617,11 @@ Setiap screen minimal punya state:
 - Error
 
 Tambahan:
-- Home: `alreadyLoggedToday`
-- Calendar: `noEntryForSelectedDate`
-- Log Mood: `saveDisabled`, `saving`, `saved`
-- Statistics: `insufficientData`
-- Analysis: `insufficientData`
+- Beranda: `alreadyLoggedToday`
+- Kalender: `noEntryForSelectedDate`
+- Detail Mood: `saveDisabled`, `saving`, `saved`
+- Statistik: `insufficientData`
+- Analisis: `insufficientData`
 
 ## 8. Product Foundations & Requirements
 
@@ -632,9 +644,9 @@ Tambahan:
 ## 8.4 Functional Requirements
 - User dapat menyimpan 1 mood per hari
 - Data mood saat ini disimpan secara lokal pada perangkat pengguna
-- Calendar menampilkan mood berdasarkan tanggal
-- Statistics dihitung dari mood history
-- Pengguna dapat mengakses halaman Privacy Policy melalui Settings.
+- Kalender menampilkan mood berdasarkan tanggal
+- Statistik dihitung dari mood history
+- Pengguna dapat mengakses halaman Kebijakan dan Privasi melalui Pengaturan
 
 ## 8.5 Edge Cases
 - Tidak ada data → tampilkan empty state
