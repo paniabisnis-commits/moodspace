@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'pin_lock_screen.dart';
+import 'pattern_lock_screen.dart';
 import 'dart:ui';
 import 'package:confetti/confetti.dart';
 import 'calendar_screen.dart';
@@ -14,6 +17,7 @@ import 'test_result_model.dart' as result_model;
 import 'mental_health_chatbot_screen.dart';
 import 'about_app_screen.dart';
 import 'privacy_policy_screen.dart';
+import '../services/app_lock_service.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key, required this.userName});
@@ -24,7 +28,7 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   int _selectedIndex = 0;
   MoodModel? currentMood;
   String energyLevel = 'Sedang';
@@ -40,13 +44,101 @@ class _HomeScreenState extends State<HomeScreen> {
   String reminderTime = '20:00';
   String appVersion = '';
   String buildNumber = '';
+
+  bool _wasInBackground = false;
   @override
   void initState() {
     super.initState();
+
+    WidgetsBinding.instance.addObserver(this);
     userName = widget.userName;
     loadReminderTime();
 
     _loadAppInfo();
+  }
+
+  @override
+void didChangeAppLifecycleState(
+  AppLifecycleState state,
+) async {
+
+  if (state == AppLifecycleState.paused ||
+      state == AppLifecycleState.inactive) {
+
+    _wasInBackground = true;
+
+    AppLockService.backgroundTime =
+      DateTime.now();
+
+  }
+
+  if (state == AppLifecycleState.resumed &&
+      _wasInBackground) {
+
+    _wasInBackground = false;
+
+    final lastBackground =
+    AppLockService.backgroundTime;
+
+if (lastBackground != null) {
+
+  final seconds =
+      DateTime.now()
+          .difference(lastBackground)
+          .inSeconds;
+
+  if (seconds < 30) {
+    return;
+  }
+}
+
+    final securityType =
+        await AppLockService.getSecurityType();
+
+    if (securityType == 'NONE') {
+      return;
+    }
+
+    if (AppLockService.isLockScreenShowing) {
+      return;
+    }
+
+    AppLockService.setLockShowing(true);
+
+    if (!mounted) return;
+
+    if (securityType == 'PIN') {
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => PinLockScreen(
+            userName: userName,
+          ),
+        ),
+      );
+
+    } else if (securityType == 'Pola') {
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => PatternLockScreen(
+            userName: userName,
+          ),
+        ),
+      );
+
+    }
+  }
+}
+
+  @override
+  void dispose() {
+
+    WidgetsBinding.instance.removeObserver(this);
+
+    super.dispose();
   }
 
   @override

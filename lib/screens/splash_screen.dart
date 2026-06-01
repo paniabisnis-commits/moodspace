@@ -2,9 +2,12 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../services/app_lock_service.dart';
 import 'home_screen.dart';
 import 'intro_flow_screen.dart';
 import 'mood_decor.dart';
+import 'pin_lock_screen.dart';
+import 'pattern_lock_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -45,7 +48,8 @@ class _SplashScreenState extends State<SplashScreen>
 
   Future<void> checkUser() async {
 
-  final prefs = await SharedPreferences.getInstance();
+  final prefs =
+      await SharedPreferences.getInstance();
 
   final isOnboardingDone =
       prefs.getBool('is_onboarding_done') ?? false;
@@ -53,16 +57,45 @@ class _SplashScreenState extends State<SplashScreen>
   final savedName =
       prefs.getString('user_name') ?? '';
 
-  await Future.delayed(const Duration(seconds: 2));
+  await Future.delayed(
+    const Duration(seconds: 2),
+  );
 
   if (!mounted) return;
 
-  if (isOnboardingDone) {
+  // BELUM ONBOARDING
+  if (!isOnboardingDone) {
 
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (_) => HomeScreen(
+        builder: (_) => const IntroFlowScreen(),
+      ),
+    );
+
+    return;
+  }
+
+  final securityType =
+      prefs.getString('security_type') ?? 'NONE';
+
+  if (securityType == 'PIN') {
+    AppLockService.setLockShowing(true);
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (_) => PinLockScreen(
+          userName: savedName,
+        ),
+      ),
+    );
+
+  } else if (securityType == 'Pola') {
+    AppLockService.setLockShowing(true);
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (_) => PatternLockScreen(
           userName: savedName,
         ),
       ),
@@ -73,11 +106,14 @@ class _SplashScreenState extends State<SplashScreen>
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (_) => const IntroFlowScreen(),
+        builder: (_) => HomeScreen(
+          userName: savedName,
+        ),
       ),
     );
 
   }
+
 }
 
   @override

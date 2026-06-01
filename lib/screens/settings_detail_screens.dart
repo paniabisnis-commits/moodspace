@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'mood_decor.dart';
 import 'mood_model.dart';
+import 'change_pin_screen.dart';
 
 const List<IconData> profileAvatarOptions = [
   Icons.spa_rounded,
@@ -323,7 +324,28 @@ class SecuritySettingsScreen extends StatefulWidget {
 }
 
 class _SecuritySettingsScreenState extends State<SecuritySettingsScreen> {
-  String selectedType = 'PIN';
+  String selectedType = 'NONE';
+
+  @override
+    void initState() {
+      super.initState();
+      loadSecurityType();
+    }
+
+    Future<void> loadSecurityType() async {
+
+      final prefs =
+          await SharedPreferences.getInstance();
+
+      final savedType =
+          prefs.getString('security_type') ?? 'NONE';
+
+      if (!mounted) return;
+
+      setState(() {
+        selectedType = savedType;
+      });
+    }
 
   @override
   Widget build(BuildContext context) {
@@ -343,7 +365,13 @@ class _SecuritySettingsScreenState extends State<SecuritySettingsScreen> {
                   'Metode Pengaman',
                   style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
                 ),
-                const SizedBox(height: 14),
+                _securityChoice(
+                  title: 'Tidak Menggunakan Keamanan',
+                  value: 'NONE',
+                  icon: Icons.lock_open_rounded,
+                ),
+
+                const SizedBox(height: 12),
                 _securityChoice(
                   title: 'Gunakan PIN',
                   value: 'PIN',
@@ -358,19 +386,90 @@ class _SecuritySettingsScreenState extends State<SecuritySettingsScreen> {
               ],
             ),
           ),
+
+          const SizedBox(height: 12),
+
+          SectionAccentCard(
+            child: ListTile(
+              leading: const Icon(
+                Icons.password_rounded,
+              ),
+              title: const Text(
+                'Ubah PIN',
+              ),
+              subtitle: const Text(
+                'Ganti PIN keamanan aplikasi',
+              ),
+              trailing: const Icon(
+                Icons.arrow_forward_ios_rounded,
+                size: 16,
+              ),
+              onTap: () {
+
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) =>
+                        const ChangePinScreen(),
+                  ),
+                );
+
+              },
+            ),
+          ),
           const SizedBox(height: 16),
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (_) => SecuritySetupScreen(type: selectedType),
-                  ),
-                );
-              },
-              child: Text('Atur $selectedType'),
-            ),
+              onPressed: () async {
+
+                    final navigator = Navigator.of(context);
+                    final messenger = ScaffoldMessenger.of(context);
+
+                    final prefs =
+                        await SharedPreferences.getInstance();
+
+                    if (!mounted) return;
+
+                    if (selectedType == 'NONE') {
+
+                      await prefs.remove('security_pin');
+
+                      await prefs.remove('security_pattern');
+
+                      await prefs.setString(
+                        'security_type',
+                        'NONE',
+                      );
+
+                      if (!mounted) return;
+
+                      messenger.showSnackBar(
+                        const SnackBar(
+                          backgroundColor: Colors.green,
+                          content: Text(
+                            'Keamanan berhasil dinonaktifkan',
+                          ),
+                        ),
+                      );
+
+                      return;
+                    }
+
+                    navigator.push(
+                      MaterialPageRoute(
+                        builder: (_) => SecuritySetupScreen(
+                          type: selectedType,
+                        ),
+                      ),
+                    );
+                  },
+              child: Text(
+                selectedType == 'NONE'
+                    ? 'Nonaktifkan Keamanan'
+                    : 'Atur $selectedType',
+              ),
+            ),  
           ),
         ],
       ),
@@ -433,11 +532,15 @@ class SecuritySetupScreen extends StatefulWidget {
 
 class _SecuritySetupScreenState extends State<SecuritySetupScreen> {
   final TextEditingController _controller = TextEditingController();
+  final TextEditingController _confirmController =
+      TextEditingController();
+
   final List<int> selectedDots = [];
 
   @override
   void dispose() {
     _controller.dispose();
+    _confirmController.dispose();
     super.dispose();
   }
 
@@ -452,16 +555,32 @@ class _SecuritySetupScreenState extends State<SecuritySetupScreen> {
         children: [
           const SizedBox(height: 8),
           if (widget.type == 'PIN')
-            SectionAccentCard(
-              child: TextField(
-                controller: _controller,
-                obscureText: true,
-                keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
-                  labelText: 'Masukkan 4 digit PIN',
+          SectionAccentCard(
+            child: Column(
+              children: [
+
+                TextField(
+                  controller: _controller,
+                  obscureText: true,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(
+                    labelText: 'PIN Baru',
+                  ),
                 ),
-              ),
-            )
+
+                const SizedBox(height: 16),
+
+                TextField(
+                  controller: _confirmController,
+                  obscureText: true,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(
+                    labelText: 'Konfirmasi PIN',
+                  ),
+                ),
+              ],
+            ),
+          )
           else
             SectionAccentCard(
               child: Column(
@@ -539,6 +658,7 @@ class _SecuritySetupScreenState extends State<SecuritySetupScreen> {
 
     messenger.showSnackBar(
       const SnackBar(
+        backgroundColor: Colors.red,
         content: Text('PIN minimal 4 digit.'),
       ),
     );
@@ -551,6 +671,7 @@ class _SecuritySetupScreenState extends State<SecuritySetupScreen> {
 
     messenger.showSnackBar(
       const SnackBar(
+        backgroundColor: Colors.red,
         content: Text(
           'Pola minimal terdiri dari 4 titik.',
         ),
@@ -565,25 +686,50 @@ class _SecuritySetupScreenState extends State<SecuritySetupScreen> {
 
   if (widget.type == 'PIN') {
 
+    if (_controller.text !=
+    _confirmController.text) {
+
+  messenger.showSnackBar(
+    const SnackBar(
+      backgroundColor: Colors.red,
+      content: Text(
+        'PIN tidak cocok',
+      ),
+    ),
+  );
+
+  return;
+}
+
     await prefs.setString(
       'security_pin',
       _controller.text,
+    );
+
+    await prefs.setString(
+      'security_type',
+      'PIN',
     );
   }
 
   if (widget.type == 'Pola') {
 
-  await prefs.setString(
-    'security_pattern',
-    selectedDots.join('-'),
-  );
+    await prefs.setString(
+      'security_pattern',
+      selectedDots.join('-'),
+    );
 
-}
+    await prefs.setString(
+      'security_type',
+      'Pola',
+    );
+  }
 
   if (!mounted) return;
 
   messenger.showSnackBar(
     SnackBar(
+      backgroundColor: Colors.green,
       content: Text(
         '${widget.type} berhasil disimpan.',
       ),
@@ -765,3 +911,4 @@ class _DetailScaffold extends StatelessWidget {
     );
   }
 }
+
